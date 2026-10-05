@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#ee3b3b">
+<title>NãoQuebre — Calculadora de preços</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    /* Paleta n8n-inspired */
+    --red: #ee3b3b;
+    --red-dark: #c92a2a;
+    --red-light: #fee2e2;
+    --ink: #101330;         /* grafite escuro */
+    --ink-2: #1a1d3a;
+    --ink-3: #2a2d4a;
+    --bg: #f7f7f8;
+    --card: #ffffff;
+    --border: #e5e5e8;
+    --border-strong: #d4d4d8;
+    --text: #18181b;
+    --text-muted: #71717a;
+    --text-soft: #a1a1aa;
+    --green: #10b981;
+    --green-dark: #047857;
+    --green-light: #d1fae5;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --amber-dark: #b45309;
+    --mono: ui-monospace, "SF Mono", Monaco, "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+  }
+
+  html, body {
+    width: 100%; max-width: 100%;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+    background: var(--bg); color: var(--text);
+    padding: 72px 12px 130px;
+    max-width: 560px;
+    margin: 0 auto;
+    font-size: 15px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  * { max-width: 100%; }
+
+  /* ===== HEADER ===== */
+  .header {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 10px 12px; z-index: 20;
+    max-width: 560px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 8px;
+  }
+  .header .logo {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 17px; font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    min-width: 0;
+  }
+  .header .logo .mark {
+    width: 32px; height: 32px;
+    background: var(--red);
+    color: #fff;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 900;
+    letter-spacing: -0.05em;
+    box-shadow: 0 2px 6px rgba(238,59,59,0.3);
+    flex-shrink: 0;
+  }
+  .header .logo .name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .header .btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .header button {
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 12px; border-radius: 8px; font-size: 13px;
+    font-weight: 600; cursor: pointer; font-family: inherit;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .header button:hover { background: var(--border); }
+  .header button.primary {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+  }
+  .header button.primary:hover { background: var(--red-dark); }
+
+  @media (max-width: 380px) {
+    .header .logo .name { font-size: 15px; }
+    .header button { padding: 8px; font-size: 12px; }
+  }
+  @media (max-width: 340px) {
+    .header .logo .name { display: none; }
+  }
+
+  /* ===== TABS PRODUTOS ===== */
+  .tabs {
+    display: flex; gap: 6px; margin-bottom: 12px;
+    overflow-x: auto; padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    background: #fff; color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 7px 12px; border-radius: 8px; font-size: 13px;
+    font-weight: 600; cursor: pointer; white-space: nowrap;
+    font-family: inherit; flex-shrink: 0;
+    display: flex; align-items: center; gap: 4px;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.15s;
+  }
+  .tab:hover { border-color: var(--border-strong); }
+  .tab.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .tab.add {
+    border-style: dashed;
+    color: var(--red);
+    border-color: var(--red);
+    padding: 7px 12px;
+  }
+  .tab .star { color: var(--amber); font-size: 11px; flex-shrink: 0; }
+  .tab.active .star { color: #fbbf24; }
+
+  /* ===== MODO TOGGLE ===== */
+  .modo-toggle {
+    display: flex; background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px; margin-bottom: 12px; gap: 3px;
+  }
+  .modo-toggle button {
+    flex: 1; padding: 9px;
+    border: none; background: transparent;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    color: var(--text-muted); border-radius: 7px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .modo-toggle button.active {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  /* ===== TÍTULOS ===== */
+  h1.page-title {
+    font-size: 20px; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+    word-break: break-word;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .fav-btn {
+    background: transparent; border: none; font-size: 20px;
+    cursor: pointer; padding: 0; line-height: 1;
+    flex-shrink: 0;
+    color: var(--text-soft);
+  }
+  .sub { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .card h2 {
+    font-size: 11px; color: var(--text-muted); font-weight: 700;
+    margin-bottom: 12px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  /* ===== NOME PRODUTO ===== */
+  .nome-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .nome-card h2 {
+    font-size: 11px; color: var(--text-muted); font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .nome-card input {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 10px; font-size: 17px; background: #fff;
+    font-family: inherit; font-weight: 600;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .nome-card input:focus {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(238,59,59,0.12);
+  }
+
+  /* ===== RENDIMENTO ===== */
+  .rendimento-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border-left: 3px solid var(--red);
+  }
+  .rendimento-card h2 {
+    font-size: 11px; color: var(--text-muted); font-weight: 700;
+    margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .rendimento-grid {
+    display: grid; grid-template-columns: 90px 1fr; gap: 8px;
+  }
+  .rendimento-grid input {
+    padding: 10px 12px;
+    border: 1.5px solid var(--border-strong); border-radius: 9px;
+    font-size: 16px; background: #fff; font-family: var(--mono);
+    font-weight: 600; min-width: 0;
+    color: var(--text);
+  }
+  .rendimento-grid input:focus {
+    outline: none; border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(238,59,59,0.12);
+  }
+  .rendimento-grid input:last-child { font-family: inherit; }
+  .rendimento-hint {
+    font-size: 12px; color: var(--text-muted);
+    margin-top: 8px; line-height: 1.5;
+  }
+
+  /* ===== INGREDIENTES ===== */
+  .ing {
+    background: #fafafa;
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px; margin-bottom: 10px;
+  }
+  .ing-top { display: flex; gap: 6px; margin-bottom: 10px; }
+  .ing-top input {
+    flex: 1; padding: 10px 12px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 9px; font-size: 15px; background: #fff;
+    min-width: 0; font-family: inherit; color: var(--text);
+  }
+  .ing-top input:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(238,59,59,0.12); }
+  .ing-top .btn-x {
+    background: #fff; color: var(--red);
+    border: 1.5px solid var(--border-strong);
+    width: 38px; height: 38px;
+    min-width: 38px; padding: 0; border-radius: 9px;
+    font-size: 18px; cursor: pointer; flex-shrink: 0;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .ing-top .btn-x:hover { background: var(--red-light); border-color: var(--red); }
+
+  .ing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .field { display: flex; flex-direction: column; min-width: 0; }
+  .field label {
+    font-size: 10px; color: var(--text-soft);
+    margin-bottom: 4px;
+    text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .field input, .field select {
+    padding: 9px 8px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 8px; font-size: 14px; background: #fff;
+    width: 100%; min-width: 0;
+    font-family: var(--mono);
+    font-weight: 500;
+    color: var(--text);
+  }
+  .field select { font-family: inherit; }
+  .field input:focus, .field select:focus {
+    outline: none; border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(238,59,59,0.1);
+  }
+  .field input.falta {
+    border-color: var(--amber);
+    background: #fffbeb;
+  }
+
+  .ing-custo {
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px dashed var(--border-strong);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--text-muted);
+    gap: 8px;
+  }
+  .ing-custo strong {
+    color: var(--red);
+    font-size: 15px;
+    font-family: var(--mono);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .ing-custo strong.zero { color: var(--text-soft); }
+
+  .total-ing {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    display: flex; justify-content: space-between;
+    font-size: 13px;
+    gap: 8px;
+    align-items: center;
+  }
+  .total-ing span:last-child {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .total-ing.destaque {
+    background: var(--red);
+    margin-top: 6px;
+  }
+
+  @media (max-width: 340px) {
+    .ing-grid { grid-template-columns: 1fr 1fr; }
+    .ing-grid .field:nth-child(3) { grid-column: span 2; }
+    .ing-grid .field:last-child { grid-column: span 2; }
+  }
+
+  /* ===== INPUTS FULL ===== */
+  input.full, select.full {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 10px; font-size: 15px; background: #fff;
+    font-family: var(--mono); font-weight: 500;
+    min-width: 0; color: var(--text);
+  }
+  input.full:focus {
+    outline: none; border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(238,59,59,0.12);
+  }
+  label.small {
+    font-size: 11px; color: var(--text-muted);
+    display: block; margin-bottom: 5px; margin-top: 12px;
+    font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  label.small:first-child { margin-top: 0; }
+
+  /* ===== BOTÕES ===== */
+  button.btn-primary {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 14px;
+    border-radius: 11px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    font-family: inherit;
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 14px rgba(238,59,59,0.3);
+    transition: all 0.15s;
+  }
+  button.btn-primary:active { transform: scale(0.985); box-shadow: 0 2px 6px rgba(238,59,59,0.3); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--red);
+    border: 1.5px dashed var(--red);
+    padding: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 4px;
+    border-radius: 10px;
+    width: 100%;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn-ghost:hover { background: var(--red-light); }
+
+  /* ===== CANAIS ===== */
+  .canais { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+  .canal {
+    background: #fff;
+    color: var(--text-muted);
+    border: 1.5px solid var(--border-strong);
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .canal:hover { border-color: var(--red); color: var(--red); }
+  .canal.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  /* ===== CARD % (Lucro desejado) ===== */
+  .lucro-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border-left: 3px solid var(--red);
+  }
+  .lucro-card h2 {
+    font-size: 12px; color: var(--ink); font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .lucro-input-wrap {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg);
+    border: 1.5px solid var(--border-strong);
+    border-radius: 11px;
+    padding: 4px 14px;
+    margin-bottom: 10px;
+    transition: all 0.15s;
+  }
+  .lucro-input-wrap:focus-within {
+    border-color: var(--red);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(238,59,59,0.12);
+  }
+  .lucro-input-wrap input {
+    flex: 1; padding: 11px 0;
+    border: none; font-size: 24px;
+    font-weight: 800;
+    color: var(--red);
+    background: transparent;
+    font-family: var(--mono);
+    outline: none; min-width: 0;
+    text-align: right;
+  }
+  .lucro-input-wrap .sufixo {
+    font-size: 20px; font-weight: 800;
+    color: var(--red);
+    font-family: var(--mono);
+  }
+  .lucro-botoes {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px;
+    margin-bottom: 10px;
+  }
+  .lucro-bt {
+    background: #fff;
+    color: var(--text-muted);
+    border: 1.5px solid var(--border-strong);
+    padding: 9px 2px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: var(--mono);
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .lucro-bt:hover { border-color: var(--red); color: var(--red); }
+  .lucro-bt:active { transform: scale(0.95); }
+  .lucro-bt.active {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+  }
+  @media (max-width: 340px) {
+    .lucro-botoes { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .lucro-resultado {
+    background: var(--ink);
+    border-radius: 11px;
+    padding: 16px;
+    margin-top: 8px;
+    text-align: center;
+    color: #fff;
+  }
+  .lucro-resultado .label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .lucro-resultado .valor {
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    font-family: var(--mono);
+    word-break: break-all;
+    letter-spacing: -0.02em;
+  }
+  .lucro-resultado .sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 8px;
+  }
+  .btn-usar {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 11px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 12px;
+    width: 100%;
+    transition: all 0.15s;
+  }
+  .btn-usar:hover { background: var(--red-dark); }
+  .btn-usar:active { transform: scale(0.98); }
+
+  /* ===== RESULTADO (gaveta) ===== */
+  .result {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    padding: 16px;
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.12);
+    max-width: 560px;
+    margin: 0 auto;
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+    max-height: 88vh; overflow-y: auto;
+    z-index: 30;
+  }
+  .result.show { transform: translateY(0); }
+  .result .close {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    cursor: pointer; font-size: 16px;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+  .result .min {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+  .result .big {
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 6px;
+    font-family: var(--mono);
+    word-break: break-all;
+    letter-spacing: -0.02em;
+  }
+  .result .hint { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+  .result .row2 {
+    display: flex; justify-content: space-between;
+    font-size: 14px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    gap: 8px;
+    align-items: center;
+  }
+  .result .row2 span:first-child { color: var(--text-muted); }
+  .result .row2 strong {
+    font-weight: 700;
+    font-family: var(--mono);
+    flex-shrink: 0;
+    color: var(--text);
+  }
+  .result .row2.total {
+    border-top: 2px solid var(--ink);
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+  .result .row2.total strong { color: var(--red); font-size: 16px; }
+  .result .row2 small { color: var(--text-soft); font-size: 11px; }
+
+  .warn, .ok, .bad {
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-top: 12px;
+    line-height: 1.5;
+    border-left: 3px solid;
+  }
+  .warn { background: var(--amber-light); border-color: var(--amber); color: var(--amber-dark); }
+  .ok   { background: var(--green-light); border-color: var(--green); color: var(--green-dark); }
+  .bad  { background: var(--red-light); border-color: var(--red); color: var(--red-dark); }
+
+  .result-actions {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .action-btn {
+    background: #fff;
+    color: var(--text);
+    border: 1.5px solid var(--border-strong);
+    padding: 12px 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+    gap: 5px;
+    transition: all 0.15s;
+  }
+  .action-btn:hover { border-color: var(--ink); }
+  .action-btn:active { transform: scale(0.98); }
+  .action-btn.wpp { background: #25d366; color: #fff; border-color: #25d366; }
+  .action-btn.pdf { background: var(--red); color: #fff; border-color: var(--red); }
+  .action-btn.copy { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .action-btn.share { background: #fff; color: var(--ink); }
+  .action-btn.full { grid-column: span 2; }
+
+  /* ===== MODAL ===== */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(16,19,48,0.6);
+    z-index: 40; display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .overlay.show { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    max-width: 400px; width: 100%;
+    max-height: 80vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .modal h3 {
+    margin-bottom: 12px; font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .modal p { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
+
+  /* ===== INDICADORES ===== */
+  .save-indicator {
+    position: fixed; top: 68px; right: 12px;
+    background: var(--ink); color: #fff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    opacity: 0; transition: opacity 0.3s;
+    z-index: 25;
+  }
+  .save-indicator.show { opacity: 1; }
+
+  .toast {
+    position: fixed; bottom: 100px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--ink); color: #fff;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0; transition: all 0.3s;
+    z-index: 100;
+    pointer-events: none;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .modo-avancado { display: block; }
+  .modo-simples .modo-avancado { display: none; }
+</style>
+</head>
+<body class="modo-simples" id="bodyEl">
+
+<div class="header">
+  <div class="logo">
+    <span class="mark">NQ</span>
+    <span class="name">NãoQuebre</span>
+  </div>
+  <div class="btns">
+    <button onclick="abrirMenu()">☰</button>
+    <button class="primary" onclick="criarNovoProduto()">+ Novo</button>
+  </div>
+</div>
+
+<div class="tabs" id="tabs"></div>
+
+<div class="modo-toggle">
+  <button id="btnSimples" class="active" onclick="setModo('simples')">Simples</button>
+  <button id="btnAvancado" onclick="setModo('avancado')">Avançado</button>
+</div>
+
+<div class="nome-card">
+  <h2>Nome do produto</h2>
+  <input type="text" id="nomeProduto" placeholder="Ex: Bolo de cenoura, Pizza margherita..." 
+         maxlength="60" oninput="onNomeChange()">
+</div>
+
+<h1 class="page-title">
+  <span id="pageTitle">Meu produto</span>
+  <button class="fav-btn" id="favBtn" onclick="toggleFavorito()" title="Favoritar">☆</button>
+</h1>
+<p class="sub">Digite o que você gasta. A gente diz o preço justo.</p>
+
+<div class="rendimento-card">
+  <h2>Rendimento da receita</h2>
+  <div class="rendimento-grid">
+    <input type="number" id="rendimento" placeholder="1" inputmode="numeric" min="1" step="1" oninput="onRendimentoChange()">
+    <input type="text" id="rendimentoUnidade" placeholder="unidades, fatias..." oninput="onRendimentoChange()">
+  </div>
+  <div class="rendimento-hint" id="rendimentoHint">
+    Quantas unidades essa receita produz? Ex: bolo que rende 12 fatias.
+  </div>
+</div>
+
+<div class="card">
+  <h2>Ingredientes (receita inteira)</h2>
+  <div id="ingredients"></div>
+  <div class="total-ing">
+    <span>Total da receita</span>
+    <span id="totalIng">R$ 0,00</span>
+  </div>
+  <div class="total-ing destaque">
+    <span id="labelPorUnidade">Por unidade</span>
+    <span id="totalIngUnidade">R$ 0,00</span>
+  </div>
+  <button class="btn-ghost" onclick="addIngredient()" style="margin-top:12px;">+ Adicionar ingrediente</button>
+</div>
+
+<div class="card modo-avancado">
+  <h2>Outros gastos</h2>
+  <label class="small">Embalagem (R$ por unidade)</label>
+  <input type="number" id="embalagem" placeholder="0,00" inputmode="decimal" step="0.01" class="full" oninput="autoCalc()">
+
+  <label class="small">Gás / luz (R$ por receita inteira)</label>
+  <input type="number" id="gas" placeholder="0,00" inputmode="decimal" step="0.01" class="full" oninput="autoCalc()">
+
+  <label class="small">Seu tempo pra fazer a receita (minutos)</label>
+  <input type="number" id="tempo" placeholder="60" inputmode="numeric" class="full" oninput="autoCalc()">
+
+  <label class="small">Quanto vale sua hora? (R$)</label>
+  <input type="number" id="hora" placeholder="20,00" inputmode="decimal" step="0.01" class="full" oninput="autoCalc()">
+</div>
+
+<div class="card modo-avancado">
+  <h2>Taxas que comem o preço</h2>
+  <label class="small">Onde você vende?</label>
+  <div class="canais">
+    <button type="button" class="canal" data-fee="0" onclick="setCanal(this)">Balcão / Pix</button>
+    <button type="button" class="canal" data-fee="5" onclick="setCanal(this)">Cartão</button>
+    <button type="button" class="canal" data-fee="23" onclick="setCanal(this)">iFood</button>
+    <button type="button" class="canal" data-fee="10" onclick="setCanal(this)">WhatsApp</button>
+  </div>
+  <label class="small">Taxa total (%)</label>
+  <input type="number" id="taxa" placeholder="0" inputmode="decimal" step="0.1" value="0" class="full" oninput="autoCalc()">
+</div>
+
+<div class="lucro-card">
+  <h2>💰 Quantos % você quer ganhar?</h2>
+  <div class="lucro-input-wrap">
+    <input type="number" id="percentualDesejado" placeholder="50" inputmode="decimal" step="1" oninput="onPercentualChange()">
+    <span class="sufixo">%</span>
+  </div>
+  <div class="lucro-botoes">
+    <button class="lucro-bt" onclick="setPercentual(30)">30%</button>
+    <button class="lucro-bt" onclick="setPercentual(50)">50%</button>
+    <button class="lucro-bt" onclick="setPercentual(80)">80%</button>
+    <button class="lucro-bt" onclick="setPercentual(100)">100%</button>
+    <button class="lucro-bt" onclick="setPercentual(150)">150%</button>
+  </div>
+  <div class="lucro-resultado">
+    <div class="label">Então venda por</div>
+    <div class="valor" id="precoPeloPercentual">R$ 0,00</div>
+    <div class="sub" id="lucroEmReais">Você lucra R$ 0,00 por unidade</div>
+    <button class="btn-usar" onclick="usarEstePreco(event)">✓ Usar este preço</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Quanto você cobra por unidade?</h2>
+  <input type="number" id="precoAtual" placeholder="R$ 0,00" inputmode="decimal" step="0.01" class="full" oninput="autoCalc()">
+</div>
+
+<button class="btn-primary" onclick="calcular()" style="position:fixed;bottom:0;left:12px;right:12px;max-width:536px;margin:0 auto;z-index:10;">Ver análise completa</button>
+
+<div class="result" id="result"></div>
+
+<div class="save-indicator" id="saveIndicator">Salvo</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)fecharMenu()">
+  <div class="modal">
+    <h3 id="modalTitle">Menu</h3>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'naoquebre_v9';
+let produtos = [];
+let produtoAtivo = 0;
+let modo = 'simples';
+let ultimaAnalise = null;
+
+function novoIngrediente() {
+  return { nome: '', paguei: '', levei: '', unidadeLevei: 'kg', usei: '', unidadeUsei: 'g' };
+}
+
+function novoProduto(nome) {
+  return {
+    nome: nome || '',
+    favorito: false,
+    rendimento: '1',
+    rendimentoUnidade: 'unidade(s)',
+    ingredients: [novoIngrediente()],
+    embalagem: '', gas: '', tempo: '', hora: '',
+    taxa: 0, percentualDesejado: '', precoAtual: ''
+  };
+}
+
+function normalizarIng(ing) {
+  if (!ing || typeof ing !== 'object') return novoIngrediente();
+  return {
+    nome: ing.nome || '', paguei: ing.paguei ?? '', levei: ing.levei ?? '',
+    unidadeLevei: ing.unidadeLevei || 'kg', usei: ing.usei ?? '',
+    unidadeUsei: ing.unidadeUsei || 'g'
+  };
+}
+
+function normalizarProduto(p) {
+  if (!p || typeof p !== 'object') return novoProduto();
+  return {
+    nome: p.nome || '',
+    favorito: !!p.favorito,
+    rendimento: p.rendimento ?? '1',
+    rendimentoUnidade: p.rendimentoUnidade || 'unidade(s)',
+    ingredients: Array.isArray(p.ingredients) && p.ingredients.length > 0
+      ? p.ingredients.map(normalizarIng) : [novoIngrediente()],
+    embalagem: p.embalagem ?? '', gas: p.gas ?? '',
+    tempo: p.tempo ?? '', hora: p.hora ?? '',
+    taxa: p.taxa ?? 0,
+    percentualDesejado: p.percentualDesejado ?? '',
+    precoAtual: p.precoAtual ?? ''
+  };
+}
+
+function setModo(m) {
+  modo = m;
+  document.getElementById('bodyEl').className = 'modo-' + m;
+  document.getElementById('btnSimples').classList.toggle('active', m === 'simples');
+  document.getElementById('btnAvancado').classList.toggle('active', m === 'avancado');
+  try { localStorage.setItem(STORAGE_KEY + '_modo', m); } catch (e) {}
+}
+
+function carregarModo() {
+  try {
+    const m = localStorage.getItem(STORAGE_KEY + '_modo');
+    if (m === 'simples' || m === 'avancado') setModo(m);
+  } catch (e) {}
+}
+
+function salvar() {
+  try {
+    salvarAtual();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ produtos, produtoAtivo }));
+    mostrarSalvo();
+  } catch (e) { console.error(e); }
+}
+
+function carregar() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) { produtos = [novoProduto()]; produtoAtivo = 0; return; }
+    const estado = JSON.parse(raw);
+    const lista = estado && estado.produtos;
+    if (!Array.isArray(lista) || lista.length === 0) throw new Error('inválido');
+    produtos = lista.map(normalizarProduto);
+    produtoAtivo = Math.min(estado.produtoAtivo || 0, produtos.length - 1);
+  } catch (e) {
+    localStorage.removeItem(STORAGE_KEY);
+    produtos = [novoProduto()];
+    produtoAtivo = 0;
+  }
+}
+
+let saveTimeout;
+function mostrarSalvo() {
+  clearTimeout(saveTimeout);
+  const el = document.getElementById('saveIndicator');
+  if (!el) return;
+  el.classList.add('show');
+  saveTimeout = setTimeout(() => el.classList.remove('show'), 1200);
+}
+
+function mostrarToast(msg) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function getP() {
+  if (!produtos[produtoAtivo]) { produtos = [novoProduto()]; produtoAtivo = 0; }
+  return produtos[produtoAtivo];
+}
+
+function nomeExibir(p) {
+  return p.nome && p.nome.trim() ? p.nome : 'Sem nome';
+}
+
+function renderTabs() {
+  const el = document.getElementById('tabs');
+  if (!el) return;
+  el.innerHTML = '';
+  const ordenados = produtos.map((p, i) => ({ p, i }))
+    .sort((a, b) => (b.p.favorito ? 1 : 0) - (a.p.favorito ? 1 : 0));
+  ordenados.forEach(({ p, i }) => {
+    const b = document.createElement('button');
+    b.className = 'tab' + (i === produtoAtivo ? ' active' : '');
+    b.innerHTML = (p.favorito ? '<span class="star">★</span>' : '') + escapeHtml(nomeExibir(p));
+    b.onclick = () => trocarProduto(i);
+    el.appendChild(b);
+  });
+  const add = document.createElement('button');
+  add.className = 'tab add';
+  add.textContent = '+';
+  add.onclick = () => criarNovoProduto();
+  el.appendChild(add);
+}
+
+function trocarProduto(i) { salvarAtual(); produtoAtivo = i; renderTudo(); salvar(); }
+
+function criarNovoProduto() {
+  salvarAtual();
+  produtos.push(novoProduto(''));
+  produtoAtivo = produtos.length - 1;
+  renderTudo(); salvar();
+  setTimeout(() => {
+    const el = document.getElementById('nomeProduto');
+    if (el) el.focus();
+  }, 100);
+}
+
+function renderTudo() {
+  const p = getP();
+  const title = document.getElementById('pageTitle');
+  if (title) title.textContent = nomeExibir(p);
+  const favBtn = document.getElementById('favBtn');
+  if (favBtn) {
+    favBtn.textContent = p.favorito ? '★' : '☆';
+    favBtn.style.color = p.favorito ? '#f59e0b' : '#a1a1aa';
+  }
+  setVal('nomeProduto', p.nome);
+  setVal('rendimento', p.rendimento);
+  setVal('rendimentoUnidade', p.rendimentoUnidade);
+  setVal('embalagem', p.embalagem);
+  setVal('gas', p.gas);
+  setVal('tempo', p.tempo);
+  setVal('hora', p.hora);
+  setVal('taxa', p.taxa);
+  setVal('percentualDesejado', p.percentualDesejado);
+  setVal('precoAtual', p.precoAtual);
+  renderIngredients();
+  renderTabs();
+  atualizarHintRendimento();
+  atualizarPrecoPeloPercentual();
+  document.querySelectorAll('.canal').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.dataset.fee) === parseFloat(p.taxa));
+  });
+}
+
+function setVal(id, v) { const el = document.getElementById(id); if (el) el.value = v ?? ''; }
+
+function salvarAtual() {
+  const p = getP(); if (!p) return;
+  p.nome = getVal('nomeProduto');
+  p.rendimento = getVal('rendimento');
+  p.rendimentoUnidade = getVal('rendimentoUnidade');
+  p.embalagem = getVal('embalagem');
+  p.gas = getVal('gas');
+  p.tempo = getVal('tempo');
+  p.hora = getVal('hora');
+  p.taxa = getVal('taxa');
+  p.percentualDesejado = getVal('percentualDesejado');
+  p.precoAtual = getVal('precoAtual');
+}
+
+function getVal(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+
+function onNomeChange() {
+  const p = getP();
+  p.nome = getVal('nomeProduto');
+  document.getElementById('pageTitle').textContent = nomeExibir(p);
+  renderTabs();
+  salvar();
+}
+
+function toggleFavorito() {
+  const p = getP();
+  p.favorito = !p.favorito;
+  renderTudo(); salvar();
+  mostrarToast(p.favorito ? '⭐ Adicionado aos favoritos' : 'Removido dos favoritos');
+}
+
+function getRendimento() {
+  const r = parseFloat(getVal('rendimento'));
+  return r > 0 ? r : 1;
+}
+
+function onRendimentoChange() {
+  const p = getP();
+  p.rendimento = getVal('rendimento');
+  p.rendimentoUnidade = getVal('rendimentoUnidade');
+  atualizarHintRendimento();
+  atualizarTotalIngredientes();
+  atualizarPrecoPeloPercentual();
+  salvar();
+}
+
+function atualizarHintRendimento() {
+  const r = getRendimento();
+  const unid = getVal('rendimentoUnidade') || 'unidade(s)';
+  const el = document.getElementById('rendimentoHint');
+  const labelPU = document.getElementById('labelPorUnidade');
+  if (el) {
+    if (r === 1) el.textContent = 'Se sua receita rende só 1 unidade, deixa em 1.';
+    else el.textContent = `Essa receita rende ${r} ${unid}. O app divide o custo por ${r}.`;
+  }
+  if (labelPU) labelPU.textContent = r > 1 ? `Por ${unid.replace(/s$/, '')} (÷ ${r})` : 'Por unidade';
+}
+
+function converter(valor, de, para) {
+  const map = {
+    'kg': { base: 'g', fator: 1000 }, 'g': { base: 'g', fator: 1 },
+    'L': { base: 'ml', fator: 1000 }, 'ml': { base: 'ml', fator: 1 },
+    'un': { base: 'un', fator: 1 },
+  };
+  const from = map[de], to = map[para];
+  if (!from || !to || from.base !== to.base) return valor;
+  return (valor * from.fator) / to.fator;
+}
+
+function custoIngrediente(ing) {
+  if (!ing) return 0;
+  const paguei = parseFloat(ing.paguei) || 0;
+  const levei = parseFloat(ing.levei) || 0;
+  const usei = parseFloat(ing.usei) || 0;
+  if (!paguei || !levei || !usei) return 0;
+  return (paguei / levei) * converter(usei, ing.unidadeUsei, ing.unidadeLevei);
+}
+
+function calcularCustoPorUnidade() {
+  const p = getP();
+  const r = getRendimento();
+  const custoIngTotal = p.ingredients.reduce((s, ing) => s + custoIngrediente(ing), 0);
+  const gasTotal = parseFloat(p.gas) || 0;
+  const tempo = parseFloat(p.tempo) || 0;
+  const hora = parseFloat(p.hora) || 0;
+  const custoMaoObraTotal = (tempo / 60) * hora;
+  const embalagemUn = parseFloat(p.embalagem) || 0;
+  const custoIngUn = custoIngTotal / r;
+  const gasUn = gasTotal / r;
+  const custoMaoObraUn = custoMaoObraTotal / r;
+  const custoBaseUn = custoIngUn + gasUn + custoMaoObraUn + embalagemUn;
+  return { custoIngTotal, custoIngUn, gasTotal, gasUn, custoMaoObraTotal, custoMaoObraUn, embalagemUn, custoBaseUn, tempo, r };
+}
+
+function onPercentualChange() {
+  getP().percentualDesejado = getVal('percentualDesejado');
+  atualizarPrecoPeloPercentual();
+  salvar();
+}
+
+function setPercentual(valor) {
+  const input = document.getElementById('percentualDesejado');
+  if (!input) return;
+  input.value = valor;
+  document.querySelectorAll('.lucro-bt').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.textContent.replace('%','')) === valor);
+  });
+  onPercentualChange();
+}
+
+function atualizarPrecoPeloPercentual() {
+  const el = document.getElementById('precoPeloPercentual');
+  const elLucro = document.getElementById('lucroEmReais');
+  if (!el) return;
+  const custo = calcularCustoPorUnidade();
+  const perc = parseFloat(getVal('percentualDesejado')) || 0;
+  const taxa = (parseFloat(getVal('taxa')) || 0) / 100;
+  const precoSemTaxa = custo.custoBaseUn * (1 + perc / 100);
+  const precoFinal = taxa < 1 ? precoSemTaxa / (1 - taxa) : precoSemTaxa;
+  const lucroReal = precoFinal - precoFinal * taxa - custo.custoBaseUn;
+  el.textContent = 'R$ ' + precoFinal.toFixed(2).replace('.', ',');
+  if (elLucro) {
+    const unid = (getVal('rendimentoUnidade') || 'unidade').replace(/s$/, '');
+    elLucro.textContent = `Você lucra R$ ${lucroReal.toFixed(2).replace('.', ',')} por ${unid}`;
+  }
+}
+
+function usarEstePreco(ev) {
+  const preco = document.getElementById('precoPeloPercentual').textContent.replace('R$ ', '').replace(',', '.');
+  setVal('precoAtual', preco);
+  getP().precoAtual = preco;
+  autoCalc(); salvar();
+  const btn = ev ? ev.target : event.target;
+  const texto = btn.textContent;
+  btn.textContent = '✓ Aplicado!';
+  btn.style.background = '#10b981';
+  setTimeout(() => { btn.textContent = texto; btn.style.background = ''; }, 1500);
+}
+
+function renderIngredients() {
+  const p = getP();
+  const el = document.getElementById('ingredients');
+  if (!el) return;
+  el.innerHTML = '';
+  p.ingredients.forEach((ing, i) => {
+    const falta = !ing.usei;
+    const div = document.createElement('div');
+    div.className = 'ing';
+    div.innerHTML = `
+      <div class="ing-top">
+        <input type="text" placeholder="Nome do insumo (ex: Farinha)" value="${escapeHtml(ing.nome)}" 
+               oninput="updateIng(${i}, 'nome', this.value)">
+        <button class="btn-x" onclick="removeIngredient(${i})">×</button>
+      </div>
+      <div class="ing-grid">
+        <div class="field">
+          <label>Paguei (R$)</label>
+          <input type="number" placeholder="20" inputmode="decimal" step="0.01"
+                 value="${escapeHtml(ing.paguei)}" oninput="updateIng(${i}, 'paguei', this.value)">
+        </div>
+        <div class="field">
+          <label>Levei (qtd)</label>
+          <input type="number" placeholder="1" inputmode="decimal" step="0.01"
+                 value="${escapeHtml(ing.levei)}" oninput="updateIng(${i}, 'levei', this.value)">
+        </div>
+        <div class="field">
+          <label>Unidade</label>
+          <select onchange="updateIng(${i}, 'unidadeLevei', this.value)">
+            ${['kg','g','L','ml','un'].map(u => 
+              `<option value="${u}" ${ing.unidadeLevei === u ? 'selected' : ''}>${u}</option>`
+            ).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="ing-grid" style="margin-top:6px;">
+        <div class="field" style="grid-column: span 2;">
+          <label>Uso na receita</label>
+          <input type="number" class="campo-uso ${falta ? 'falta' : ''}" 
+                 placeholder="250" inputmode="decimal" step="0.01"
+                 value="${escapeHtml(ing.usei)}" oninput="updateIng(${i}, 'usei', this.value)">
+        </div>
+        <div class="field">
+          <label>Unidade</label>
+          <select onchange="updateIng(${i}, 'unidadeUsei', this.value)">
+            ${['kg','g','L','ml','un'].map(u => 
+              `<option value="${u}" ${ing.unidadeUsei === u ? 'selected' : ''}>${u}</option>`
+            ).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="ing-custo">
+        <span>Custo nessa receita</span>
+        <strong id="custo-${i}" class="${custoIngrediente(ing) === 0 ? 'zero' : ''}">R$ ${custoIngrediente(ing).toFixed(2).replace('.', ',')}</strong>
+      </div>
+    `;
+    el.appendChild(div);
+  });
+  atualizarTotalIngredientes();
+}
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function updateIng(i, campo, valor) {
+  const p = getP();
+  if (!p.ingredients[i]) return;
+  p.ingredients[i][campo] = valor;
+  const custoEl = document.getElementById('custo-' + i);
+  if (custoEl) {
+    const c = custoIngrediente(p.ingredients[i]);
+    custoEl.textContent = 'R$ ' + c.toFixed(2).replace('.', ',');
+    custoEl.classList.toggle('zero', c === 0);
+  }
+  if (campo === 'usei') {
+    const input = document.querySelectorAll('.campo-uso')[i];
+    if (input) input.classList.toggle('falta', !valor);
+  }
+  atualizarTotalIngredientes();
+  atualizarPrecoPeloPercentual();
+  salvar();
+}
+
+function atualizarTotalIngredientes() {
+  const total = getP().ingredients.reduce((s, ing) => s + custoIngrediente(ing), 0);
+  const r = getRendimento();
+  const elTotal = document.getElementById('totalIng');
+  const elUnit = document.getElementById('totalIngUnidade');
+  if (elTotal) elTotal.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+  if (elUnit) elUnit.textContent = 'R$ ' + (total / r).toFixed(2).replace('.', ',');
+}
+
+function addIngredient() { getP().ingredients.push(novoIngrediente()); renderIngredients(); salvar(); }
+
+function removeIngredient(i) {
+  const p = getP();
+  p.ingredients.splice(i, 1);
+  if (p.ingredients.length === 0) p.ingredients.push(novoIngrediente());
+  renderIngredients(); atualizarPrecoPeloPercentual(); salvar();
+}
+
+function setCanal(btn) {
+  document.querySelectorAll('.canal').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  setVal('taxa', btn.dataset.fee);
+  getP().taxa = btn.dataset.fee;
+  atualizarPrecoPeloPercentual();
+  salvar();
+}
+
+function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
+
+function autoCalc() { salvarAtual(); atualizarPrecoPeloPercentual(); salvar(); }
+
+function calcular() {
+  salvarAtual();
+  const p = getP();
+  const c = calcularCustoPorUnidade();
+  const taxa = (parseFloat(p.taxa) || 0) / 100;
+  const unid = p.rendimentoUnidade || 'unidade(s)';
+  const unidSingular = unid.replace(/s$/, '');
+  const precoMin = taxa < 1 ? c.custoBaseUn / (1 - taxa) : c.custoBaseUn;
+  const precoAtual = parseFloat(p.precoAtual) || 0;
+  const perc = parseFloat(p.percentualDesejado) || 0;
+  const precoSemTaxa = c.custoBaseUn * (1 + perc / 100);
+  const precoPeloPerc = taxa < 1 ? precoSemTaxa / (1 - taxa) : precoSemTaxa;
+
+  ultimaAnalise = {
+    nome: nomeExibir(p), unid, unidSingular, precoMin, precoPeloPerc, perc, precoAtual,
+    custoBaseUn: c.custoBaseUn, custoIngUn: c.custoIngUn, embalagemUn: c.embalagemUn,
+    gasUn: c.gasUn, custoMaoObraUn: c.custoMaoObraUn, r: c.r, taxa: taxa * 100,
+    lucroPeloPerc: precoPeloPerc - precoPeloPerc * taxa - c.custoBaseUn
+  };
+
+  const rEl = document.getElementById('result');
+  let html = `
+    <button class="close" onclick="fecharResult()">×</button>
+    <div class="min">Preço mínimo por ${escapeHtml(unidSingular)}</div>
+    <div class="big">${fmt(precoMin)}</div>
+    <div class="hint">Abaixo disso você perde dinheiro</div>
+    
+    <div class="row2"><span>Ingredientes <small>(÷ ${c.r})</small></span><strong>${fmt(c.custoIngUn)}</strong></div>
+    <div class="row2"><span>Embalagem</span><strong>${fmt(c.embalagemUn)}</strong></div>
+    <div class="row2"><span>Gás / luz <small>(÷ ${c.r})</small></span><strong>${fmt(c.gasUn)}</strong></div>
+    <div class="row2"><span>Seu tempo <small>(÷ ${c.r})</small></span><strong>${fmt(c.custoMaoObraUn)}</strong></div>
+    <div class="row2 total"><span>Custo por ${escapeHtml(unidSingular)}</span><strong>${fmt(c.custoBaseUn)}</strong></div>
+  `;
+
+  if (perc > 0) {
+    const lucroReal = precoPeloPerc - precoPeloPerc * taxa - c.custoBaseUn;
+    html += `
+      <div style="background:#101330;border-radius:12px;padding:16px;margin-top:16px;color:#fff;">
+        <div style="font-size:11px;color:rgba(255,255,255,0.6);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">
+          Você quer ganhar ${perc}%
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#fff;line-height:1;font-family:var(--mono);word-break:break-all;letter-spacing:-0.02em;">
+          Venda por ${fmt(precoPeloPerc)}
+        </div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:10px;">
+          Você lucra <strong style="color:#fff;">${fmt(lucroReal)}</strong> por ${escapeHtml(unidSingular)}
+        </div>
+        ${taxa > 0 ? `<div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:6px;">Taxa de ${(taxa*100).toFixed(0)}% já incluída</div>` : ''}
+      </div>
+    `;
+  }
+
+  if (precoAtual > 0) {
+    const lucroReal = precoAtual - precoAtual * taxa - c.custoBaseUn;
+    const margem = (lucroReal / precoAtual) * 100;
+    const margemStr = margem.toFixed(1).replace('.', ',');
+    html += `<div class="row2" style="margin-top:16px;border-top:2px solid #101330;padding-top:12px;"><span>Seu preço hoje</span><strong>${fmt(precoAtual)}</strong></div>`;
+    html += `<div class="row2"><span>Lucro por ${escapeHtml(unidSingular)}</span><strong>${fmt(lucroReal)}</strong></div>`;
+    html += `<div class="row2"><span>Margem real</span><strong>${margemStr}%</strong></div>`;
+    if (lucroReal < 0) html += `<div class="bad">🚨 <strong>Atenção!</strong> Você está perdendo ${fmt(Math.abs(lucroReal))} a cada venda. Cobre no mínimo ${fmt(precoMin)}.</div>`;
+    else if (margem < 15) html += `<div class="warn">⚠️ <strong>Margem apertada.</strong> Sobra só ${fmt(lucroReal)} por venda.</div>`;
+    else html += `<div class="ok">✅ <strong>Tá saudável!</strong> Você ganha ${fmt(lucroReal)} por ${escapeHtml(unidSingular)}.</div>`;
+  } else if (perc === 0) {
+    html += `<div class="warn">💡 <strong>Dica:</strong> digite quantos % você quer ganhar no card vermelho.</div>`;
+  }
+
+  html += `
+    <div class="result-actions">
+      <button class="action-btn wpp full" onclick="compartilharWhatsApp()">📱 Enviar no WhatsApp</button>
+      <button class="action-btn share" onclick="compartilharNativo()">📤 Compartilhar</button>
+      <button class="action-btn copy" onclick="copiarAnalise()">📋 Copiar</button>
+      <button class="action-btn pdf full" onclick="salvarPDF()">📄 Salvar como PDF</button>
+    </div>
+  `;
+
+  rEl.innerHTML = html;
+  rEl.classList.add('show');
+}
+
+function fecharResult() { const r = document.getElementById('result'); if (r) r.classList.remove('show'); }
+
+function gerarTextoAnalise() {
+  if (!ultimaAnalise) return '';
+  const a = ultimaAnalise;
+  const linhas = [];
+  linhas.push(`*${a.nome}*`);
+  linhas.push('');
+  linhas.push(`Rende: ${a.r} ${a.unid}`);
+  linhas.push('');
+  linhas.push(`*CUSTO POR ${a.unidSingular.toUpperCase()}:* ${fmt(a.custoBaseUn)}`);
+  linhas.push(`   • Ingredientes: ${fmt(a.custoIngUn)}`);
+  if (a.embalagemUn > 0) linhas.push(`   • Embalagem: ${fmt(a.embalagemUn)}`);
+  if (a.gasUn > 0) linhas.push(`   • Gás/luz: ${fmt(a.gasUn)}`);
+  if (a.custoMaoObraUn > 0) linhas.push(`   • Mão de obra: ${fmt(a.custoMaoObraUn)}`);
+  linhas.push('');
+  linhas.push(`*PREÇO MÍNIMO:* ${fmt(a.precoMin)}`);
+  if (a.perc > 0) {
+    linhas.push(`*PREÇO SUGERIDO (${a.perc}% lucro):* ${fmt(a.precoPeloPerc)}`);
+    linhas.push(`   Lucro: ${fmt(a.lucroPeloPerc)} por ${a.unidSingular}`);
+  }
+  if (a.precoAtual > 0) {
+    const lucro = a.precoAtual - a.precoAtual * (a.taxa/100) - a.custoBaseUn;
+    const margem = (lucro / a.precoAtual) * 100;
+    linhas.push('');
+    linhas.push(`*SE VENDER A ${fmt(a.precoAtual)}:*`);
+    linhas.push(`   Lucro: ${fmt(lucro)} por ${a.unidSingular}`);
+    linhas.push(`   Margem: ${margem.toFixed(1).replace('.', ',')}%`);
+  }
+  linhas.push('');
+  linhas.push('_Calculado com NãoQuebre_');
+  return linhas.join('\n');
+}
+
+function compartilharWhatsApp() {
+  const texto = gerarTextoAnalise();
+  if (!texto) { mostrarToast('Calcule antes de compartilhar'); return; }
+  window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+}
+
+async function compartilharNativo() {
+  const texto = gerarTextoAnalise();
+  if (!texto) { mostrarToast('Calcule antes de compartilhar'); return; }
+  if (navigator.share) {
+    try { await navigator.share({ title: 'Análise — ' + (ultimaAnalise?.nome || 'NãoQuebre'), text: texto }); }
+    catch (e) { if (e.name !== 'AbortError') mostrarToast('Não foi possível compartilhar'); }
+  } else { copiarTexto(texto); mostrarToast('Texto copiado!'); }
+}
+
+function copiarAnalise() {
+  const texto = gerarTextoAnalise();
+  if (!texto) { mostrarToast('Calcule antes de copiar'); return; }
+  copiarTexto(texto);
+  mostrarToast('✓ Análise copiada!');
+}
+
+function copiarTexto(texto) {
+  if (navigator.clipboard) navigator.clipboard.writeText(texto).catch(() => fallbackCopiar(texto));
+  else fallbackCopiar(texto);
+}
+
+function fallbackCopiar(texto) {
+  const ta = document.createElement('textarea');
+  ta.value = texto; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+function salvarPDF() {
+  const texto = gerarTextoAnalise();
+  if (!texto) { mostrarToast('Calcule antes de salvar'); return; }
+  const win = window.open('', '_blank');
+  if (!win) { mostrarToast('Bloqueado pelo navegador'); return; }
+  const html = `
+    <!DOCTYPE html>
+    <html lang="pt-BR"><head><meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise — ${escapeHtml(ultimaAnalise?.nome || 'NãoQuebre')}</title>
+    <style>
+      @page { margin: 20mm; }
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        color: #18181b; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; }
+      h1 { font-size: 24px; margin-bottom: 4px; font-weight: 800; color: #101330; letter-spacing: -0.02em; }
+      .sub { color: #71717a; font-size: 13px; margin-bottom: 24px; }
+      .header-logo { display: flex; align-items: center; gap: 10px;
+        margin-bottom: 20px; padding-bottom: 20px; border-bottom: 3px solid #ee3b3b; }
+      .header-logo .mark { width: 40px; height: 40px; background: #ee3b3b; color: #fff;
+        border-radius: 10px; display: flex; align-items: center; justify-content: center;
+        font-size: 16px; font-weight: 900; letter-spacing: -0.05em; }
+      .header-logo strong { font-size: 20px; color: #101330; font-weight: 800; }
+      pre { font-family: ui-monospace, "SF Mono", Monaco, monospace;
+        white-space: pre-wrap; word-wrap: break-word;
+        background: #f7f7f8; padding: 20px; border-radius: 12px;
+        border-left: 4px solid #ee3b3b; font-size: 13px; color: #18181b; }
+      .footer { margin-top: 30px; padding-top: 20px;
+        border-top: 1px solid #e5e5e8; text-align: center; color: #a1a1aa; font-size: 12px; }
+      .print-btn { position: fixed; top: 20px; right: 20px;
+        background: #ee3b3b; color: #fff; border: none; padding: 12px 20px;
+        border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+      @media print { .print-btn { display: none; } }
+    </style></head><body>
+    <button class="print-btn" onclick="window.print()">📄 Salvar como PDF</button>
+    <div class="header-logo">
+      <div class="mark">NQ</div>
+      <strong>NãoQuebre</strong>
+    </div>
+    <h1>${escapeHtml(ultimaAnalise?.nome || 'Análise')}</h1>
+    <div class="sub">Gerado em ${new Date().toLocaleString('pt-BR')}</div>
+    <pre>${escapeHtml(texto)}</pre>
+    <div class="footer">Análise gerada por NãoQuebre — Calculadora de precificação</div>
+    <script>window.onload = () => setTimeout(() => window.print(), 500);<\/script>
+    </body></html>
+  `;
+  win.document.write(html);
+  win.document.close();
+  mostrarToast('Escolha "Salvar como PDF" na impressão');
+}
+
+function abrirMenu() {
+  const modal = document.getElementById('modalBody');
+  if (!modal) return;
+  document.getElementById('modalTitle').textContent = 'Menu';
+  const p = getP();
+  modal.innerHTML = `
+    <p>Escolha uma opção:</p>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="btn-primary" onclick="exemploPronto()">Ver exemplo pronto</button>
+      <button class="btn-primary" onclick="duplicarProduto()" style="background:#101330;">Duplicar receita</button>
+      <button class="btn-primary" onclick="toggleFavorito(); fecharMenu();" style="background:#f59e0b;">${p.favorito ? '★ Remover dos favoritos' : '☆ Marcar como favorita'}</button>
+      <button class="btn-primary" onclick="apagarProduto()" style="background:#dc2626;">Apagar este produto</button>
+      <button class="btn-primary" onclick="exportarDados()" style="background:#101330;">Exportar backup</button>
+      <button class="btn-primary" onclick="importarDados()" style="background:#101330;">Importar backup</button>
+      <button class="btn-primary" onclick="fecharMenu()" style="background:#71717a;">Fechar</button>
+    </div>
+  `;
+  document.getElementById('overlay').classList.add('show');
+}
+
+function fecharMenu() { const o = document.getElementById('overlay'); if (o) o.classList.remove('show'); }
+
+function exemploPronto() {
+  salvarAtual();
+  const exemplo = {
+    nome: 'Bolo de cenoura',
+    favorito: false,
+    rendimento: '12', rendimentoUnidade: 'fatias',
+    ingredients: [
+      { nome: 'Cenoura', paguei: '4', levei: '1', unidadeLevei: 'kg', usei: '300', unidadeUsei: 'g' },
+      { nome: 'Farinha', paguei: '5', levei: '1', unidadeLevei: 'kg', usei: '300', unidadeUsei: 'g' },
+      { nome: 'Açúcar', paguei: '4', levei: '1', unidadeLevei: 'kg', usei: '400', unidadeUsei: 'g' },
+      { nome: 'Ovos', paguei: '12', levei: '12', unidadeLevei: 'un', usei: '3', unidadeUsei: 'un' },
+      { nome: 'Óleo', paguei: '8', levei: '1', unidadeLevei: 'L', usei: '200', unidadeUsei: 'ml' },
+      { nome: 'Chocolate em pó', paguei: '12', levei: '1', unidadeLevei: 'kg', usei: '100', unidadeUsei: 'g' }
+    ],
+    embalagem: '1.50', gas: '3.00', tempo: '60', hora: '25',
+    taxa: '0', percentualDesejado: '50', precoAtual: '8'
+  };
+  produtos.push(normalizarProduto(exemplo));
+  produtoAtivo = produtos.length - 1;
+  renderTudo(); salvar(); fecharMenu();
+}
+
+function duplicarProduto() {
+  salvarAtual();
+  const original = getP();
+  const copia = JSON.parse(JSON.stringify(original));
+  copia.nome = (original.nome || 'Sem nome') + ' (cópia)';
+  copia.favorito = false;
+  produtos.push(normalizarProduto(copia));
+  produtoAtivo = produtos.length - 1;
+  renderTudo(); salvar(); fecharMenu();
+  mostrarToast('Receita duplicada');
+}
+
+function apagarProduto() {
+  if (produtos.length === 1) { alert('Você precisa ter pelo menos 1 produto.'); return; }
+  if (!confirm('Apagar "' + nomeExibir(getP()) + '"? Não tem como voltar.')) return;
+  produtos.splice(produtoAtivo, 1); produtoAtivo = 0;
+  renderTudo(); salvar(); fecharMenu();
+}
+
+function exportarDados() {
+  salvarAtual();
+  const json = JSON.stringify({ produtos }, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'naoquebre-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  fecharMenu();
+}
+
+function importarDados() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const dados = JSON.parse(ev.target.result);
+        if (!dados.produtos || !Array.isArray(dados.produtos)) { alert('Arquivo inválido.'); return; }
+        if (!confirm('Isso vai substituir seus dados atuais. Continuar?')) return;
+        produtos = dados.produtos.map(normalizarProduto);
+        produtoAtivo = 0; renderTudo(); salvar(); fecharMenu();
+      } catch (err) { alert('Erro ao ler arquivo.'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+carregarModo();
+carregar();
+renderTudo();
+window.addEventListener('beforeunload', salvarAtual);
+</script>
+</body>
+</html>
