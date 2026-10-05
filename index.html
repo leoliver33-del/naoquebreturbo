@@ -26,7 +26,7 @@
   }
   * { max-width: 100%; }
 
-  /* ===== AUTH ===== */
+  /* AUTH */
   .auth-screen {
     position: fixed; inset: 0;
     background: linear-gradient(135deg, var(--ink) 0%, var(--ink-3) 100%);
@@ -48,7 +48,7 @@
   }
   .auth-logo .name { font-size: 24px; font-weight: 800; color: var(--ink); letter-spacing: -0.03em; }
   .auth-card h2 { font-size: 22px; font-weight: 800; color: var(--ink); margin-bottom: 6px; letter-spacing: -0.02em; text-align: center; }
-  .auth-card .auth-sub { font-size: 14px; color: var(--text-muted); text-align: center; margin-bottom: 24px; }
+  .auth-card .auth-sub { font-size: 14px; color: var(--text-muted); text-align: center; margin-bottom: 24px; line-height: 1.5; }
   .auth-field { margin-bottom: 14px; }
   .auth-field label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
   .auth-field input {
@@ -69,13 +69,21 @@
   .auth-switch { text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
   .auth-switch a { color: var(--red); font-weight: 700; text-decoration: none; cursor: pointer; }
   .auth-switch a:hover { text-decoration: underline; }
+  .auth-switch .forgot {
+    display: inline-block; margin-top: 14px; margin-bottom: 8px;
+    font-size: 13px; color: var(--text-muted);
+    background: transparent; border: none; cursor: pointer;
+    text-decoration: underline; font-family: inherit;
+    padding: 4px 8px;
+  }
+  .auth-switch .forgot:hover { color: var(--red); }
   .auth-msg { padding: 12px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; display: none; line-height: 1.5; }
   .auth-msg.show { display: block; }
   .auth-msg.error { background: var(--red-light); color: var(--red-dark); border-left: 3px solid var(--red); }
   .auth-msg.success { background: var(--green-light); color: var(--green-dark); border-left: 3px solid var(--green); }
   .auth-msg.info { background: var(--amber-light); color: var(--amber-dark); border-left: 3px solid var(--amber); }
 
-  /* ===== HEADER ===== */
+  /* HEADER */
   .header {
     position: fixed; top: 0; left: 0; right: 0;
     background: #fff; border-bottom: 1px solid var(--border);
@@ -110,7 +118,7 @@
     .header button.user { max-width: 70px; font-size: 12px; padding: 8px; }
   }
 
-  /* ===== LOADING ===== */
+  /* LOADING */
   .loading-screen {
     position: fixed; inset: 0; background: var(--bg);
     display: flex; align-items: center; justify-content: center;
@@ -125,11 +133,11 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading-screen p { color: var(--text-muted); font-size: 14px; font-weight: 600; }
 
-  /* ===== APP ===== */
+  /* APP */
   .app-content { display: none; }
   .app-content.show { display: block; }
 
-  /* ===== DRAWER ===== */
+  /* DRAWER */
   .drawer-overlay {
     position: fixed; inset: 0; background: rgba(16,19,48,0.5);
     backdrop-filter: blur(2px); z-index: 50; opacity: 0; pointer-events: none;
@@ -179,15 +187,15 @@
   .drawer-empty { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 14px; }
   .drawer-empty .icon { font-size: 48px; margin-bottom: 12px; display: block; }
 
-  /* ===== RECIPE CARD (com menu ⋮) ===== */
   .recipe-card {
     background: #fff; border: 1.5px solid var(--border); border-radius: 12px;
     padding: 12px 10px 12px 14px; margin-bottom: 8px;
     display: flex; align-items: center; gap: 8px;
-    transition: all 0.15s; position: relative;
+    transition: all 0.15s; position: relative; flex-wrap: wrap;
   }
   .recipe-card:hover { border-color: var(--red); box-shadow: 0 4px 12px rgba(238,59,59,0.08); }
   .recipe-card.active { border-color: var(--red); background: var(--red-light); }
+  .recipe-card.expanded { border-color: var(--red); background: #fff; }
   .recipe-card .star { font-size: 16px; flex-shrink: 0; color: var(--amber); }
   .recipe-card .info { flex: 1; min-width: 0; cursor: pointer; }
   .recipe-card .nome {
@@ -200,31 +208,19 @@
     background: transparent; border: none; color: var(--text-muted);
     width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
     font-size: 18px; display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; transition: all 0.15s;
-    font-family: inherit; padding: 0; line-height: 1;
+    flex-shrink: 0; transition: all 0.15s; font-family: inherit; padding: 0; line-height: 1;
   }
   .recipe-menu-btn:hover { background: var(--bg); color: var(--text); }
   .recipe-menu-btn:active { transform: scale(0.9); }
 
-  /* ===== AÇÕES RÁPIDAS (aparece ao tocar em ⋮) ===== */
   .card-actions {
-    display: none;
-    padding: 10px 4px 4px;
-    gap: 6px;
-    flex-wrap: wrap;
-    border-top: 1px dashed var(--border-strong);
-    margin-top: 10px;
-    width: 100%;
+    display: none; padding: 10px 4px 4px; gap: 6px;
+    flex-wrap: wrap; border-top: 1px dashed var(--border-strong);
+    margin-top: 10px; width: 100%;
   }
   .card-actions.show { display: flex; }
-  .recipe-card.expanded {
-    flex-wrap: wrap;
-    border-color: var(--red);
-    background: #fff;
-  }
   .card-action-btn {
-    flex: 1;
-    min-width: calc(50% - 3px);
+    flex: 1; min-width: calc(50% - 3px);
     background: var(--bg); color: var(--text);
     border: 1px solid var(--border); border-radius: 8px;
     padding: 8px 10px; font-size: 12px; font-weight: 700;
@@ -247,7 +243,7 @@
   .drawer-add button:hover { background: var(--red-dark); }
   .drawer-add button:active { transform: scale(0.98); }
 
-  /* ===== TABS ===== */
+  /* TABS */
   .tabs {
     display: flex; gap: 6px; margin-bottom: 12px;
     overflow-x: auto; padding-bottom: 4px;
@@ -532,7 +528,6 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* ===== TOAST DE DESFAZER ===== */
   .undo-toast {
     position: fixed; bottom: 24px; left: 50%;
     transform: translateX(-50%) translateY(200px);
@@ -559,6 +554,7 @@
 </head>
 <body>
 
+<!-- AUTH -->
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
     <div class="auth-logo">
@@ -566,6 +562,8 @@
       <div class="name">NãoQuebre</div>
     </div>
     <div class="auth-msg" id="authMsg"></div>
+
+    <!-- LOGIN -->
     <div id="loginForm">
       <h2>Entrar</h2>
       <p class="auth-sub">Acesse suas receitas</p>
@@ -578,8 +576,13 @@
         <input type="password" id="loginSenha" placeholder="••••••••" autocomplete="current-password">
       </div>
       <button class="auth-btn" id="btnLogin" onclick="fazerLogin()">Entrar</button>
-      <div class="auth-switch">Não tem conta? <a onclick="mostrarCadastro()">Criar grátis</a></div>
+      <div class="auth-switch">
+        <button class="forgot" onclick="mostrarEsqueciSenha()">Esqueci minha senha</button><br>
+        Não tem conta? <a onclick="mostrarCadastro()">Criar grátis</a>
+      </div>
     </div>
+
+    <!-- CADASTRO -->
     <div id="cadastroForm" style="display:none;">
       <h2>Criar conta</h2>
       <p class="auth-sub">É grátis e leva 10 segundos</p>
@@ -596,11 +599,43 @@
         <input type="password" id="cadSenha" placeholder="••••••••" autocomplete="new-password">
       </div>
       <button class="auth-btn" id="btnCadastrar" onclick="fazerCadastro()">Criar conta</button>
-      <div class="auth-switch">Já tem conta? <a onclick="mostrarLogin()">Entrar</a></div>
+      <div class="auth-switch">
+        Já tem conta? <a onclick="mostrarLogin()">Entrar</a>
+      </div>
+    </div>
+
+    <!-- ESQUECI SENHA -->
+    <div id="esqueciForm" style="display:none;">
+      <h2>Recuperar senha</h2>
+      <p class="auth-sub">Digite seu email<br>Vamos enviar um link pra você criar nova senha</p>
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="esqueciEmail" placeholder="seu@email.com" autocomplete="email">
+      </div>
+      <button class="auth-btn" id="btnEnviarLink" onclick="enviarLinkRecuperacao()">Enviar link</button>
+      <div class="auth-switch">
+        Lembrou a senha? <a onclick="mostrarLogin()">Voltar pro login</a>
+      </div>
+    </div>
+
+    <!-- NOVA SENHA (após clicar no link do email) -->
+    <div id="novaSenhaForm" style="display:none;">
+      <h2>Nova senha</h2>
+      <p class="auth-sub">Digite uma nova senha pra sua conta</p>
+      <div class="auth-field">
+        <label>Nova senha</label>
+        <input type="password" id="novaSenha1" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div class="auth-field">
+        <label>Confirmar senha</label>
+        <input type="password" id="novaSenha2" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <button class="auth-btn" id="btnSalvarSenha" onclick="salvarNovaSenha()">Salvar nova senha</button>
     </div>
   </div>
 </div>
 
+<!-- LOADING -->
 <div class="loading-screen hidden" id="loadingScreen">
   <div class="spinner"></div>
   <p id="loadingText">Carregando...</p>
@@ -631,7 +666,6 @@
 
 <!-- APP -->
 <div class="app-content" id="appContent">
-
   <div class="header">
     <div class="left">
       <button class="icon" onclick="abrirDrawer()">☰</button>
@@ -670,22 +704,14 @@
       <input type="number" id="rendimento" placeholder="1" inputmode="numeric" min="1" step="1" oninput="onRendimentoChange()">
       <input type="text" id="rendimentoUnidade" placeholder="unidades, fatias..." oninput="onRendimentoChange()">
     </div>
-    <div class="rendimento-hint" id="rendimentoHint">
-      Quantas unidades essa receita produz? Ex: bolo que rende 12 fatias.
-    </div>
+    <div class="rendimento-hint" id="rendimentoHint">Quantas unidades essa receita produz? Ex: bolo que rende 12 fatias.</div>
   </div>
 
   <div class="card">
     <h2>Ingredientes (receita inteira)</h2>
     <div id="ingredients"></div>
-    <div class="total-ing">
-      <span>Total da receita</span>
-      <span id="totalIng">R$ 0,00</span>
-    </div>
-    <div class="total-ing destaque">
-      <span id="labelPorUnidade">Por unidade</span>
-      <span id="totalIngUnidade">R$ 0,00</span>
-    </div>
+    <div class="total-ing"><span>Total da receita</span><span id="totalIng">R$ 0,00</span></div>
+    <div class="total-ing destaque"><span id="labelPorUnidade">Por unidade</span><span id="totalIngUnidade">R$ 0,00</span></div>
     <button class="btn-ghost" onclick="addIngredient()" style="margin-top:12px;">+ Adicionar ingrediente</button>
   </div>
 
@@ -752,7 +778,6 @@
       <div id="modalBody"></div>
     </div>
   </div>
-
 </div>
 
 <div class="undo-toast" id="undoToast">
@@ -773,13 +798,23 @@ let ultimaAnalise = null;
 let syncTimeout = null;
 let filtroAtual = 'todas';
 let carregandoReceitas = false;
-let menuAberto = null; // index do card com menu aberto
-let produtoExcluido = null; // pra desfazer
+let menuAberto = null;
+let produtoExcluido = null;
 let timeoutUndo = null;
+let modoRecuperacao = false;
 
 async function init() {
   try {
     sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Verificar se é recuperação de senha (token no hash da URL)
+    const hash = window.location.hash;
+    if (hash && hash.includes('access_token') && hash.includes('type=recovery')) {
+      // É recuperação de senha!
+      mostrarNovaSenha();
+      return;
+    }
+
     const { data: { session } } = await sbClient.auth.getSession();
     if (session && session.user) {
       user = session.user;
@@ -787,11 +822,12 @@ async function init() {
     } else {
       mostrarAuth();
     }
-    sbClient.auth.onAuthStateChange((event) => {
+    sbClient.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
-        user = null;
-        produtos = [];
+        user = null; produtos = [];
         mostrarAuth();
+      } else if (event === 'PASSWORD_RECOVERY') {
+        mostrarNovaSenha();
       }
     });
   } catch (e) {
@@ -805,6 +841,7 @@ function mostrarAuth() {
   document.getElementById('authScreen').classList.remove('hidden');
   document.getElementById('appContent').classList.remove('show');
   document.getElementById('loadingScreen').classList.add('hidden');
+  mostrarLogin();
 }
 function mostrarApp() {
   document.getElementById('authScreen').classList.add('hidden');
@@ -824,15 +861,37 @@ function mostrarAuthMsg(msg, tipo) {
   el.className = 'auth-msg show ' + (tipo || 'info');
 }
 function limparAuthMsg() { document.getElementById('authMsg').className = 'auth-msg'; }
-function mostrarLogin() {
-  document.getElementById('loginForm').style.display = 'block';
+
+function esconderTodosForms() {
+  document.getElementById('loginForm').style.display = 'none';
   document.getElementById('cadastroForm').style.display = 'none';
+  document.getElementById('esqueciForm').style.display = 'none';
+  document.getElementById('novaSenhaForm').style.display = 'none';
+}
+
+function mostrarLogin() {
+  esconderTodosForms();
+  document.getElementById('loginForm').style.display = 'block';
   limparAuthMsg();
 }
 function mostrarCadastro() {
-  document.getElementById('loginForm').style.display = 'none';
+  esconderTodosForms();
   document.getElementById('cadastroForm').style.display = 'block';
   limparAuthMsg();
+}
+function mostrarEsqueciSenha() {
+  esconderTodosForms();
+  document.getElementById('esqueciForm').style.display = 'block';
+  limparAuthMsg();
+}
+function mostrarNovaSenha() {
+  esconderTodosForms();
+  document.getElementById('novaSenhaForm').style.display = 'block';
+  limparAuthMsg();
+  // Força mostrar a tela de auth
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('appContent').classList.remove('show');
+  document.getElementById('loadingScreen').classList.add('hidden');
 }
 
 async function fazerLogin() {
@@ -893,6 +952,62 @@ async function fazerCadastro() {
   }
 }
 
+async function enviarLinkRecuperacao() {
+  limparAuthMsg();
+  const email = document.getElementById('esqueciEmail').value.trim();
+  if (!email) { mostrarAuthMsg('Digite seu email', 'error'); return; }
+  const btn = document.getElementById('btnEnviarLink');
+  btn.disabled = true; btn.textContent = 'Enviando...';
+  try {
+    const { error } = await sbClient.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://naoquebreturbo.pages.dev'
+    });
+    if (error) throw error;
+    mostrarAuthMsg('✅ Email enviado! Verifique sua caixa de entrada (e o spam) e clique no link.', 'success');
+  } catch (e) {
+    console.error(e);
+    let msg = 'Erro ao enviar email';
+    if (e.message.includes('rate limit')) msg = 'Muitas tentativas. Espere alguns minutos.';
+    else if (e.message.includes('not found')) msg = 'Esse email não está cadastrado.';
+    else msg = e.message;
+    mostrarAuthMsg(msg, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Enviar link';
+  }
+}
+
+async function salvarNovaSenha() {
+  limparAuthMsg();
+  const s1 = document.getElementById('novaSenha1').value;
+  const s2 = document.getElementById('novaSenha2').value;
+  if (s1.length < 6) { mostrarAuthMsg('Senha deve ter pelo menos 6 caracteres', 'error'); return; }
+  if (s1 !== s2) { mostrarAuthMsg('As senhas não batem', 'error'); return; }
+  const btn = document.getElementById('btnSalvarSenha');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  try {
+    const { error } = await sbClient.auth.updateUser({ password: s1 });
+    if (error) throw error;
+    mostrarAuthMsg('✅ Senha atualizada! Você já pode entrar.', 'success');
+    // Limpa hash da URL
+    window.location.hash = '';
+    setTimeout(() => {
+      mostrarLogin();
+      // Tenta pegar sessão ativa
+      sbClient.auth.getSession().then(({data: {session}}) => {
+        if (session?.user) {
+          user = session.user;
+          entrarNoApp();
+        }
+      });
+    }, 2000);
+  } catch (e) {
+    console.error(e);
+    mostrarAuthMsg(e.message || 'Erro ao salvar senha', 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Salvar nova senha';
+  }
+}
+
 async function sair() {
   if (!confirm('Sair da conta? Suas receitas ficam salvas na nuvem.')) return;
   await sbClient.auth.signOut();
@@ -915,8 +1030,6 @@ async function entrarNoApp() {
     atualizarUserBtn();
     esconderLoading();
     mostrarApp();
-    console.log('✅ Logado como:', user?.email, '| user_id:', user?.id);
-    console.log('📦 Receitas:', produtos.length);
   } catch (e) {
     console.error('❌ Erro entrarNoApp:', e);
     esconderLoading();
@@ -938,13 +1051,10 @@ async function carregarReceitas() {
   if (!user || !sbClient || carregandoReceitas) return;
   carregandoReceitas = true;
   try {
-    console.log('🔄 Buscando receitas...');
     const { data, error } = await sbClient
-      .from('naoquebre_recipes')
-      .select('*')
+      .from('naoquebre_recipes').select('*')
       .order('updated_at', { ascending: false, nullsFirst: false });
     if (error) throw error;
-    console.log('✅ Receitas recebidas:', data?.length || 0);
     if (!data || data.length === 0) {
       produtos = [novoProduto('')]; produtoAtivo = 0; return;
     }
@@ -975,14 +1085,13 @@ async function salvarReceitaNoSupabase(produto) {
   };
   try {
     if (produto.id_supabase) {
-      const { data, error } = await sbClient
-        .from('naoquebre_recipes').update(payload)
-        .eq('id', produto.id_supabase).select().single();
+      const { data, error } = await sbClient.from('naoquebre_recipes')
+        .update(payload).eq('id', produto.id_supabase).select().single();
       if (error) throw error;
       return data;
     } else {
-      const { data, error } = await sbClient
-        .from('naoquebre_recipes').insert(payload).select().single();
+      const { data, error } = await sbClient.from('naoquebre_recipes')
+        .insert(payload).select().single();
       if (error) throw error;
       produto.id_supabase = data.id;
       return data;
@@ -996,9 +1105,8 @@ async function salvarReceitaNoSupabase(produto) {
 
 async function deletarReceitaDoSupabase(produto) {
   if (!produto?.id_supabase) return;
-  try {
-    await sbClient.from('naoquebre_recipes').delete().eq('id', produto.id_supabase);
-  } catch (e) { console.error('Erro deletar:', e); }
+  try { await sbClient.from('naoquebre_recipes').delete().eq('id', produto.id_supabase); }
+  catch (e) { console.error('Erro deletar:', e); }
 }
 
 async function restaurarReceitaNoSupabase(produto) {
@@ -1010,8 +1118,7 @@ async function restaurarReceitaNoSupabase(produto) {
     data: serializarProduto(produto)
   };
   try {
-    const { data, error } = await sbClient
-      .from('naoquebre_recipes').insert(payload).select().single();
+    const { data, error } = await sbClient.from('naoquebre_recipes').insert(payload).select().single();
     if (error) throw error;
     produto.id_supabase = data.id;
   } catch (e) { console.error('Erro restaurar:', e); }
@@ -1044,20 +1151,15 @@ function mostrarIndicator(tipo, texto) {
   el.className = 'save-indicator show ' + tipo;
   el.textContent = texto;
   clearTimeout(indicatorTimeout);
-  if (tipo === 'saved') {
-    indicatorTimeout = setTimeout(() => el.classList.remove('show'), 1500);
-  }
+  if (tipo === 'saved') indicatorTimeout = setTimeout(() => el.classList.remove('show'), 1500);
 }
 
-function novoIngrediente() {
-  return { nome: '', paguei: '', levei: '', unidadeLevei: 'kg', usei: '', unidadeUsei: 'g' };
-}
+function novoIngrediente() { return { nome: '', paguei: '', levei: '', unidadeLevei: 'kg', usei: '', unidadeUsei: 'g' }; }
 function novoProduto(nome) {
   return {
     id_supabase: null, nome: nome || '', favorito: false, category: 'Outros',
     rendimento: '1', rendimentoUnidade: 'unidade(s)',
-    ingredients: [novoIngrediente()],
-    embalagem: '', gas: '', tempo: '', hora: '',
+    ingredients: [novoIngrediente()], embalagem: '', gas: '', tempo: '', hora: '',
     taxa: 0, percentualDesejado: '', precoAtual: ''
   };
 }
@@ -1065,8 +1167,7 @@ function normalizarIng(ing) {
   if (!ing || typeof ing !== 'object') return novoIngrediente();
   return {
     nome: ing.nome || '', paguei: ing.paguei ?? '', levei: ing.levei ?? '',
-    unidadeLevei: ing.unidadeLevei || 'kg', usei: ing.usei ?? '',
-    unidadeUsei: ing.unidadeUsei || 'g'
+    unidadeLevei: ing.unidadeLevei || 'kg', usei: ing.usei ?? '', unidadeUsei: ing.unidadeUsei || 'g'
   };
 }
 function normalizarProduto(p) {
@@ -1077,10 +1178,8 @@ function normalizarProduto(p) {
     rendimento: p.rendimento ?? '1', rendimentoUnidade: p.rendimentoUnidade || 'unidade(s)',
     ingredients: Array.isArray(p.ingredients) && p.ingredients.length > 0
       ? p.ingredients.map(normalizarIng) : [novoIngrediente()],
-    embalagem: p.embalagem ?? '', gas: p.gas ?? '',
-    tempo: p.tempo ?? '', hora: p.hora ?? '',
-    taxa: p.taxa ?? 0, percentualDesejado: p.percentualDesejado ?? '',
-    precoAtual: p.precoAtual ?? ''
+    embalagem: p.embalagem ?? '', gas: p.gas ?? '', tempo: p.tempo ?? '', hora: p.hora ?? '',
+    taxa: p.taxa ?? 0, percentualDesejado: p.percentualDesejado ?? '', precoAtual: p.precoAtual ?? ''
   };
 }
 function getP() {
@@ -1109,9 +1208,7 @@ function abrirDrawer() {
   document.getElementById('drawerOverlay').classList.add('show');
   menuAberto = null;
   renderDrawerList();
-  if (user && sbClient) {
-    carregarReceitas().then(() => { renderDrawerList(); renderTudo(); });
-  }
+  if (user && sbClient) carregarReceitas().then(() => { renderDrawerList(); renderTudo(); });
 }
 function fecharDrawer() {
   document.getElementById('drawer').classList.remove('show');
@@ -1125,7 +1222,6 @@ function setFiltro(filtro) {
   });
   renderDrawerList();
 }
-
 function toggleCardMenu(i, ev) {
   if (ev) ev.stopPropagation();
   menuAberto = (menuAberto === i) ? null : i;
@@ -1145,13 +1241,7 @@ function renderDrawerList() {
     return (a.p.nome || '').localeCompare(b.p.nome || '');
   });
   if (lista.length === 0) {
-    el.innerHTML = `
-      <div class="drawer-empty">
-        <span class="icon">📭</span>
-        <div>${busca ? 'Nenhuma receita encontrada' : 'Nenhuma receita ainda'}</div>
-        <div style="margin-top:8px;font-size:12px;">Clica em "+ Nova receita" pra começar</div>
-      </div>
-    `;
+    el.innerHTML = `<div class="drawer-empty"><span class="icon">📭</span><div>${busca ? 'Nenhuma receita encontrada' : 'Nenhuma receita ainda'}</div><div style="margin-top:8px;font-size:12px;">Clica em "+ Nova receita" pra começar</div></div>`;
     return;
   }
   el.innerHTML = lista.map(({ p, i }) => {
@@ -1175,9 +1265,7 @@ function renderDrawerList() {
         ${precoSug > 0 ? `<div class="preco">R$ ${precoSug.toFixed(2).replace('.', ',')}</div>` : ''}
         <button class="recipe-menu-btn" onclick="toggleCardMenu(${i}, event)" title="Ações">⋮</button>
         <div class="card-actions ${expandido ? 'show' : ''}">
-          <button class="card-action-btn" onclick="favoritarProduto(${i}); event.stopPropagation();">
-            ${p.favorito ? '★ Desfavoritar' : '☆ Favoritar'}
-          </button>
+          <button class="card-action-btn" onclick="favoritarProduto(${i}); event.stopPropagation();">${p.favorito ? '★ Desfavoritar' : '☆ Favoritar'}</button>
           <button class="card-action-btn" onclick="duplicarProduto(${i}); event.stopPropagation();">📄 Duplicar</button>
           <button class="card-action-btn" onclick="renomearProduto(${i}); event.stopPropagation();">✏️ Renomear</button>
           <button class="card-action-btn" onclick="compartilharProduto(${i}); event.stopPropagation();">📤 Compartilhar</button>
@@ -1188,27 +1276,17 @@ function renderDrawerList() {
   }).join('');
 }
 
-function trocarProdutoDrawer(i) {
-  salvarAtual();
-  produtoAtivo = i;
-  menuAberto = null;
-  fecharDrawer();
-  renderTudo();
-}
+function trocarProdutoDrawer(i) { salvarAtual(); produtoAtivo = i; menuAberto = null; fecharDrawer(); renderTudo(); }
 
 function favoritarProduto(i) {
-  const p = produtos[i];
-  if (!p) return;
+  const p = produtos[i]; if (!p) return;
   p.favorito = !p.favorito;
-  agendarSync(p);
-  renderDrawerList();
+  agendarSync(p); renderDrawerList();
   if (i === produtoAtivo) renderTudo();
   mostrarToast(p.favorito ? '⭐ Adicionado aos favoritos' : 'Removido dos favoritos');
 }
-
 async function duplicarProduto(i) {
-  const original = produtos[i];
-  if (!original) return;
+  const original = produtos[i]; if (!original) return;
   const copia = JSON.parse(JSON.stringify(original));
   copia.id_supabase = null;
   copia.nome = (original.nome || 'Sem nome') + ' (cópia)';
@@ -1216,32 +1294,23 @@ async function duplicarProduto(i) {
   const novo = normalizarProduto(copia);
   produtos.push(novo);
   await salvarReceitaNoSupabase(novo);
-  menuAberto = null;
-  renderDrawerList();
-  renderTudo();
+  menuAberto = null; renderDrawerList(); renderTudo();
   mostrarToast('📄 Receita duplicada');
 }
-
 function renomearProduto(i) {
-  const p = produtos[i];
-  if (!p) return;
+  const p = produtos[i]; if (!p) return;
   const nome = prompt('Novo nome:', p.nome || 'Sem nome');
   if (nome === null) return;
   p.nome = nome.trim() || 'Sem nome';
-  agendarSync(p);
-  menuAberto = null;
-  renderDrawerList();
+  agendarSync(p); menuAberto = null; renderDrawerList();
   if (i === produtoAtivo) renderTudo();
   mostrarToast('✏️ Renomeado');
 }
-
 function compartilharProduto(i) {
-  const p = produtos[i];
-  if (!p) return;
+  const p = produtos[i]; if (!p) return;
   const texto = gerarTextoProduto(p);
   window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
 }
-
 function gerarTextoProduto(p) {
   const r = parseFloat(p.rendimento) || 1;
   const unid = p.rendimentoUnidade || 'unidade(s)';
@@ -1252,56 +1321,34 @@ function gerarTextoProduto(p) {
   const custoBase = custoIng / r + (parseFloat(p.embalagem) || 0);
   const precoSug = custoBase * (1 + perc / 100) / (1 - taxa);
   const lucro = precoSug - precoSug * taxa - custoBase;
-
-  return `*${nomeExibir(p)}*\n\n` +
-    `Rende: ${r} ${unid}\n\n` +
-    `*CUSTO POR ${unidSing.toUpperCase()}:* R$ ${custoBase.toFixed(2).replace('.', ',')}\n` +
+  return `*${nomeExibir(p)}*\n\nRende: ${r} ${unid}\n\n*CUSTO POR ${unidSing.toUpperCase()}:* R$ ${custoBase.toFixed(2).replace('.', ',')}\n` +
     (perc > 0 ? `*PREÇO SUGERIDO (${perc}% lucro):* R$ ${precoSug.toFixed(2).replace('.', ',')}\nLucro: R$ ${lucro.toFixed(2).replace('.', ',')} por ${unidSing}\n\n` : '') +
     `_Calculado com NãoQuebre_`;
 }
-
 function confirmarExclusao(i) {
-  const p = produtos[i];
-  if (!p) return;
-  const nome = nomeExibir(p);
+  const p = produtos[i]; if (!p) return;
   fecharDrawer();
-  abrirModalConfirmacao(
-    '🗑️ Excluir receita?',
-    `<strong>${escapeHtml(nome)}</strong> será apagada pra sempre.<br><br>Você tem 5 segundos pra desfazer depois.`,
-    'Excluir',
-    () => excluirProduto(i)
-  );
+  abrirModalConfirmacao('🗑️ Excluir receita?',
+    `<strong>${escapeHtml(nomeExibir(p))}</strong> será apagada pra sempre.<br><br>Você tem 5 segundos pra desfazer depois.`,
+    'Excluir', () => excluirProduto(i));
 }
-
 async function excluirProduto(i) {
-  const p = produtos[i];
-  if (!p) return;
+  const p = produtos[i]; if (!p) return;
   produtoExcluido = { produto: p, index: i };
   await deletarReceitaDoSupabase(p);
   produtos.splice(i, 1);
-  if (produtos.length === 0) {
-    produtos = [novoProduto('')];
-    produtoAtivo = 0;
-  } else if (produtoAtivo >= produtos.length) {
-    produtoAtivo = produtos.length - 1;
-  }
-  fecharMenu();
-  renderTudo();
+  if (produtos.length === 0) { produtos = [novoProduto('')]; produtoAtivo = 0; }
+  else if (produtoAtivo >= produtos.length) produtoAtivo = produtos.length - 1;
+  fecharMenu(); renderTudo();
   mostrarUndoToast(`"${nomeExibir(p)}" excluída`);
 }
-
 function mostrarUndoToast(texto) {
   const el = document.getElementById('undoToast');
-  const textoEl = document.getElementById('undoText');
-  textoEl.textContent = texto;
+  document.getElementById('undoText').textContent = texto;
   el.classList.add('show');
   clearTimeout(timeoutUndo);
-  timeoutUndo = setTimeout(() => {
-    el.classList.remove('show');
-    produtoExcluido = null;
-  }, 5000);
+  timeoutUndo = setTimeout(() => { el.classList.remove('show'); produtoExcluido = null; }, 5000);
 }
-
 async function desfazerExclusao() {
   if (!produtoExcluido) return;
   clearTimeout(timeoutUndo);
@@ -1310,14 +1357,11 @@ async function desfazerExclusao() {
   produtos.splice(Math.min(index, produtos.length), 0, produto);
   produtoExcluido = null;
   document.getElementById('undoToast').classList.remove('show');
-  renderTudo();
-  mostrarToast('✓ Receita restaurada');
+  renderTudo(); mostrarToast('✓ Receita restaurada');
 }
-
 function abrirModalConfirmacao(titulo, corpo, botaoTexto, onConfirm) {
-  const modal = document.getElementById('modalBody');
   document.getElementById('modalTitle').textContent = titulo;
-  modal.innerHTML = `
+  document.getElementById('modalBody').innerHTML = `
     <p>${corpo}</p>
     <div style="display:flex;gap:8px;">
       <button class="btn-primary" onclick="fecharMenu()" style="background:#e5e5e8;color:#18181b;">Cancelar</button>
@@ -1347,16 +1391,13 @@ function renderTabs() {
   add.onclick = () => criarNovoProduto();
   el.appendChild(add);
 }
-
 function trocarProduto(i) { salvarAtual(); produtoAtivo = i; renderTudo(); }
-
 function criarNovoProduto() {
   salvarAtual();
   const novo = novoProduto('');
   produtos.push(novo);
   produtoAtivo = produtos.length - 1;
-  renderTudo();
-  salvarReceitaNoSupabase(novo);
+  renderTudo(); salvarReceitaNoSupabase(novo);
   setTimeout(() => {
     const el = document.getElementById('nomeProduto');
     if (el) { el.focus(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
@@ -1372,76 +1413,45 @@ function renderTudo() {
     favBtn.textContent = p.favorito ? '★' : '☆';
     favBtn.style.color = p.favorito ? '#f59e0b' : '#a1a1aa';
   }
-  setVal('nomeProduto', p.nome);
-  setVal('rendimento', p.rendimento);
-  setVal('rendimentoUnidade', p.rendimentoUnidade);
-  setVal('embalagem', p.embalagem);
-  setVal('gas', p.gas);
-  setVal('tempo', p.tempo);
-  setVal('hora', p.hora);
-  setVal('taxa', p.taxa);
-  setVal('percentualDesejado', p.percentualDesejado);
+  setVal('nomeProduto', p.nome); setVal('rendimento', p.rendimento);
+  setVal('rendimentoUnidade', p.rendimentoUnidade); setVal('embalagem', p.embalagem);
+  setVal('gas', p.gas); setVal('tempo', p.tempo); setVal('hora', p.hora);
+  setVal('taxa', p.taxa); setVal('percentualDesejado', p.percentualDesejado);
   setVal('precoAtual', p.precoAtual);
-  renderIngredients();
-  renderTabs();
-  atualizarHintRendimento();
-  atualizarPrecoPeloPercentual();
+  renderIngredients(); renderTabs();
+  atualizarHintRendimento(); atualizarPrecoPeloPercentual();
   document.querySelectorAll('.canal').forEach(b => {
     b.classList.toggle('active', parseFloat(b.dataset.fee) === parseFloat(p.taxa));
   });
   renderDrawerList();
 }
-
 function setVal(id, v) { const el = document.getElementById(id); if (el) el.value = v ?? ''; }
 function getVal(id) { const el = document.getElementById(id); return el ? el.value : ''; }
-
 function salvarAtual() {
   const p = getP(); if (!p) return;
-  p.nome = getVal('nomeProduto');
-  p.rendimento = getVal('rendimento');
-  p.rendimentoUnidade = getVal('rendimentoUnidade');
-  p.embalagem = getVal('embalagem');
-  p.gas = getVal('gas');
-  p.tempo = getVal('tempo');
-  p.hora = getVal('hora');
-  p.taxa = getVal('taxa');
-  p.percentualDesejado = getVal('percentualDesejado');
+  p.nome = getVal('nomeProduto'); p.rendimento = getVal('rendimento');
+  p.rendimentoUnidade = getVal('rendimentoUnidade'); p.embalagem = getVal('embalagem');
+  p.gas = getVal('gas'); p.tempo = getVal('tempo'); p.hora = getVal('hora');
+  p.taxa = getVal('taxa'); p.percentualDesejado = getVal('percentualDesejado');
   p.precoAtual = getVal('precoAtual');
 }
-
 function onNomeChange() {
-  const p = getP();
-  p.nome = getVal('nomeProduto');
+  const p = getP(); p.nome = getVal('nomeProduto');
   document.getElementById('pageTitle').textContent = nomeExibir(p);
-  renderTabs();
-  renderDrawerList();
-  agendarSync(p);
+  renderTabs(); renderDrawerList(); agendarSync(p);
 }
-
 function toggleFavorito() {
-  const p = getP();
-  p.favorito = !p.favorito;
-  renderTudo();
-  agendarSync(p);
+  const p = getP(); p.favorito = !p.favorito;
+  renderTudo(); agendarSync(p);
   mostrarToast(p.favorito ? '⭐ Adicionado aos favoritos' : 'Removido dos favoritos');
 }
-
-function getRendimento() {
-  const r = parseFloat(getVal('rendimento'));
-  return r > 0 ? r : 1;
-}
-
+function getRendimento() { const r = parseFloat(getVal('rendimento')); return r > 0 ? r : 1; }
 function onRendimentoChange() {
   const p = getP();
-  p.rendimento = getVal('rendimento');
-  p.rendimentoUnidade = getVal('rendimentoUnidade');
-  atualizarHintRendimento();
-  atualizarTotalIngredientes();
-  atualizarPrecoPeloPercentual();
-  renderDrawerList();
-  agendarSync(p);
+  p.rendimento = getVal('rendimento'); p.rendimentoUnidade = getVal('rendimentoUnidade');
+  atualizarHintRendimento(); atualizarTotalIngredientes();
+  atualizarPrecoPeloPercentual(); renderDrawerList(); agendarSync(p);
 }
-
 function atualizarHintRendimento() {
   const r = getRendimento();
   const unid = getVal('rendimentoUnidade') || 'unidade(s)';
@@ -1453,18 +1463,15 @@ function atualizarHintRendimento() {
   }
   if (labelPU) labelPU.textContent = r > 1 ? `Por ${unid.replace(/s$/, '')} (÷ ${r})` : 'Por unidade';
 }
-
 function converter(valor, de, para) {
   const map = {
     'kg': { base: 'g', fator: 1000 }, 'g': { base: 'g', fator: 1 },
-    'L': { base: 'ml', fator: 1000 }, 'ml': { base: 'ml', fator: 1 },
-    'un': { base: 'un', fator: 1 },
+    'L': { base: 'ml', fator: 1000 }, 'ml': { base: 'ml', fator: 1 }, 'un': { base: 'un', fator: 1 }
   };
   const from = map[de], to = map[para];
   if (!from || !to || from.base !== to.base) return valor;
   return (valor * from.fator) / to.fator;
 }
-
 function custoIngrediente(ing) {
   if (!ing) return 0;
   const paguei = parseFloat(ing.paguei) || 0;
@@ -1473,10 +1480,8 @@ function custoIngrediente(ing) {
   if (!paguei || !levei || !usei) return 0;
   return (paguei / levei) * converter(usei, ing.unidadeUsei, ing.unidadeLevei);
 }
-
 function calcularCustoPorUnidade() {
-  const p = getP();
-  const r = getRendimento();
+  const p = getP(); const r = getRendimento();
   const custoIngTotal = p.ingredients.reduce((s, ing) => s + custoIngrediente(ing), 0);
   const gasTotal = parseFloat(p.gas) || 0;
   const tempo = parseFloat(p.tempo) || 0;
@@ -1489,15 +1494,10 @@ function calcularCustoPorUnidade() {
   const custoBaseUn = custoIngUn + gasUn + custoMaoObraUn + embalagemUn;
   return { custoIngTotal, custoIngUn, gasTotal, gasUn, custoMaoObraTotal, custoMaoObraUn, embalagemUn, custoBaseUn, tempo, r };
 }
-
 function onPercentualChange() {
-  const p = getP();
-  p.percentualDesejado = getVal('percentualDesejado');
-  atualizarPrecoPeloPercentual();
-  renderDrawerList();
-  agendarSync(p);
+  const p = getP(); p.percentualDesejado = getVal('percentualDesejado');
+  atualizarPrecoPeloPercentual(); renderDrawerList(); agendarSync(p);
 }
-
 function setPercentual(valor) {
   const input = document.getElementById('percentualDesejado');
   if (!input) return;
@@ -1507,7 +1507,6 @@ function setPercentual(valor) {
   });
   onPercentualChange();
 }
-
 function atualizarPrecoPeloPercentual() {
   const el = document.getElementById('precoPeloPercentual');
   const elLucro = document.getElementById('lucroEmReais');
@@ -1524,19 +1523,14 @@ function atualizarPrecoPeloPercentual() {
     elLucro.textContent = `Você lucra R$ ${lucroReal.toFixed(2).replace('.', ',')} por ${unid}`;
   }
 }
-
 function usarEstePreco(ev) {
   const preco = document.getElementById('precoPeloPercentual').textContent.replace('R$ ', '').replace(',', '.');
-  setVal('precoAtual', preco);
-  getP().precoAtual = preco;
-  autoCalc();
+  setVal('precoAtual', preco); getP().precoAtual = preco; autoCalc();
   const btn = ev ? ev.target : event.target;
   const texto = btn.textContent;
-  btn.textContent = '✓ Aplicado!';
-  btn.style.background = '#10b981';
+  btn.textContent = '✓ Aplicado!'; btn.style.background = '#10b981';
   setTimeout(() => { btn.textContent = texto; btn.style.background = ''; }, 1500);
 }
-
 function renderIngredients() {
   const p = getP();
   const el = document.getElementById('ingredients');
@@ -1552,49 +1546,35 @@ function renderIngredients() {
         <button class="btn-x" onclick="removeIngredient(${i})">×</button>
       </div>
       <div class="ing-grid">
-        <div class="field">
-          <label>Paguei (R$)</label>
-          <input type="number" placeholder="20" inputmode="decimal" step="0.01" value="${escapeHtml(ing.paguei)}" oninput="updateIng(${i}, 'paguei', this.value)">
-        </div>
-        <div class="field">
-          <label>Levei (qtd)</label>
-          <input type="number" placeholder="1" inputmode="decimal" step="0.01" value="${escapeHtml(ing.levei)}" oninput="updateIng(${i}, 'levei', this.value)">
-        </div>
-        <div class="field">
-          <label>Unidade</label>
+        <div class="field"><label>Paguei (R$)</label>
+          <input type="number" placeholder="20" inputmode="decimal" step="0.01" value="${escapeHtml(ing.paguei)}" oninput="updateIng(${i}, 'paguei', this.value)"></div>
+        <div class="field"><label>Levei (qtd)</label>
+          <input type="number" placeholder="1" inputmode="decimal" step="0.01" value="${escapeHtml(ing.levei)}" oninput="updateIng(${i}, 'levei', this.value)"></div>
+        <div class="field"><label>Unidade</label>
           <select onchange="updateIng(${i}, 'unidadeLevei', this.value)">
             ${['kg','g','L','ml','un'].map(u => `<option value="${u}" ${ing.unidadeLevei === u ? 'selected' : ''}>${u}</option>`).join('')}
-          </select>
-        </div>
+          </select></div>
       </div>
       <div class="ing-grid" style="margin-top:6px;">
-        <div class="field" style="grid-column: span 2;">
-          <label>Uso na receita</label>
-          <input type="number" class="campo-uso ${falta ? 'falta' : ''}" placeholder="250" inputmode="decimal" step="0.01" value="${escapeHtml(ing.usei)}" oninput="updateIng(${i}, 'usei', this.value)">
-        </div>
-        <div class="field">
-          <label>Unidade</label>
+        <div class="field" style="grid-column: span 2;"><label>Uso na receita</label>
+          <input type="number" class="campo-uso ${falta ? 'falta' : ''}" placeholder="250" inputmode="decimal" step="0.01" value="${escapeHtml(ing.usei)}" oninput="updateIng(${i}, 'usei', this.value)"></div>
+        <div class="field"><label>Unidade</label>
           <select onchange="updateIng(${i}, 'unidadeUsei', this.value)">
             ${['kg','g','L','ml','un'].map(u => `<option value="${u}" ${ing.unidadeUsei === u ? 'selected' : ''}>${u}</option>`).join('')}
-          </select>
-        </div>
+          </select></div>
       </div>
-      <div class="ing-custo">
-        <span>Custo nessa receita</span>
-        <strong id="custo-${i}" class="${custoIngrediente(ing) === 0 ? 'zero' : ''}">R$ ${custoIngrediente(ing).toFixed(2).replace('.', ',')}</strong>
-      </div>
+      <div class="ing-custo"><span>Custo nessa receita</span>
+        <strong id="custo-${i}" class="${custoIngrediente(ing) === 0 ? 'zero' : ''}">R$ ${custoIngrediente(ing).toFixed(2).replace('.', ',')}</strong></div>
     `;
     el.appendChild(div);
   });
   atualizarTotalIngredientes();
 }
-
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[c]));
 }
-
 function updateIng(i, campo, valor) {
   const p = getP();
   if (!p.ingredients[i]) return;
@@ -1609,11 +1589,8 @@ function updateIng(i, campo, valor) {
     const input = document.querySelectorAll('.campo-uso')[i];
     if (input) input.classList.toggle('falta', !valor);
   }
-  atualizarTotalIngredientes();
-  atualizarPrecoPeloPercentual();
-  agendarSync(p);
+  atualizarTotalIngredientes(); atualizarPrecoPeloPercentual(); agendarSync(p);
 }
-
 function atualizarTotalIngredientes() {
   const total = getP().ingredients.reduce((s, ing) => s + custoIngrediente(ing), 0);
   const r = getRendimento();
@@ -1622,46 +1599,26 @@ function atualizarTotalIngredientes() {
   if (elTotal) elTotal.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
   if (elUnit) elUnit.textContent = 'R$ ' + (total / r).toFixed(2).replace('.', ',');
 }
-
-function addIngredient() {
-  const p = getP();
-  p.ingredients.push(novoIngrediente());
-  renderIngredients();
-  agendarSync(p);
-}
+function addIngredient() { const p = getP(); p.ingredients.push(novoIngrediente()); renderIngredients(); agendarSync(p); }
 function removeIngredient(i) {
-  const p = getP();
-  p.ingredients.splice(i, 1);
+  const p = getP(); p.ingredients.splice(i, 1);
   if (p.ingredients.length === 0) p.ingredients.push(novoIngrediente());
-  renderIngredients();
-  atualizarPrecoPeloPercentual();
-  renderDrawerList();
-  agendarSync(p);
+  renderIngredients(); atualizarPrecoPeloPercentual(); renderDrawerList(); agendarSync(p);
 }
 function setCanal(btn) {
   document.querySelectorAll('.canal').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  setVal('taxa', btn.dataset.fee);
-  getP().taxa = btn.dataset.fee;
-  atualizarPrecoPeloPercentual();
-  agendarSync(getP());
+  setVal('taxa', btn.dataset.fee); getP().taxa = btn.dataset.fee;
+  atualizarPrecoPeloPercentual(); agendarSync(getP());
 }
-
 function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
-function autoCalc() {
-  salvarAtual();
-  atualizarPrecoPeloPercentual();
-  renderDrawerList();
-  agendarSync(getP());
-}
+function autoCalc() { salvarAtual(); atualizarPrecoPeloPercentual(); renderDrawerList(); agendarSync(getP()); }
 function mostrarToast(msg) {
   const t = document.getElementById('toast');
   if (!t) return;
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
 }
-
 function calcular() {
   salvarAtual();
   const p = getP();
@@ -1674,14 +1631,12 @@ function calcular() {
   const perc = parseFloat(p.percentualDesejado) || 0;
   const precoSemTaxa = c.custoBaseUn * (1 + perc / 100);
   const precoPeloPerc = taxa < 1 ? precoSemTaxa / (1 - taxa) : precoSemTaxa;
-
   ultimaAnalise = {
     nome: nomeExibir(p), unid, unidSingular, precoMin, precoPeloPerc, perc, precoAtual,
     custoBaseUn: c.custoBaseUn, custoIngUn: c.custoIngUn, embalagemUn: c.embalagemUn,
     gasUn: c.gasUn, custoMaoObraUn: c.custoMaoObraUn, r: c.r, taxa: taxa * 100,
     lucroPeloPerc: precoPeloPerc - precoPeloPerc * taxa - c.custoBaseUn
   };
-
   const rEl = document.getElementById('result');
   let html = `
     <button class="close" onclick="fecharResult()">×</button>
@@ -1696,14 +1651,12 @@ function calcular() {
   `;
   if (perc > 0) {
     const lucroReal = precoPeloPerc - precoPeloPerc * taxa - c.custoBaseUn;
-    html += `
-      <div style="background:#101330;border-radius:12px;padding:16px;margin-top:16px;color:#fff;">
-        <div style="font-size:11px;color:rgba(255,255,255,0.6);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">Você quer ganhar ${perc}%</div>
-        <div style="font-size:28px;font-weight:800;color:#fff;line-height:1;font-family:var(--mono);word-break:break-all;letter-spacing:-0.02em;">Venda por ${fmt(precoPeloPerc)}</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:10px;">Você lucra <strong style="color:#fff;">${fmt(lucroReal)}</strong> por ${escapeHtml(unidSingular)}</div>
-        ${taxa > 0 ? `<div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:6px;">Taxa de ${(taxa*100).toFixed(0)}% já incluída</div>` : ''}
-      </div>
-    `;
+    html += `<div style="background:#101330;border-radius:12px;padding:16px;margin-top:16px;color:#fff;">
+      <div style="font-size:11px;color:rgba(255,255,255,0.6);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">Você quer ganhar ${perc}%</div>
+      <div style="font-size:28px;font-weight:800;color:#fff;line-height:1;font-family:var(--mono);word-break:break-all;letter-spacing:-0.02em;">Venda por ${fmt(precoPeloPerc)}</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:10px;">Você lucra <strong style="color:#fff;">${fmt(lucroReal)}</strong> por ${escapeHtml(unidSingular)}</div>
+      ${taxa > 0 ? `<div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:6px;">Taxa de ${(taxa*100).toFixed(0)}% já incluída</div>` : ''}
+    </div>`;
   }
   if (precoAtual > 0) {
     const lucroReal = precoAtual - precoAtual * taxa - c.custoBaseUn;
@@ -1718,37 +1671,28 @@ function calcular() {
   } else if (perc === 0) {
     html += `<div class="warn">💡 <strong>Dica:</strong> digite quantos % você quer ganhar no card vermelho.</div>`;
   }
-  html += `
-    <div class="result-actions">
-      <button class="action-btn wpp full" onclick="compartilharWhatsApp()">📱 Enviar no WhatsApp</button>
-      <button class="action-btn share" onclick="compartilharNativo()">📤 Compartilhar</button>
-      <button class="action-btn copy" onclick="copiarAnalise()">📋 Copiar</button>
-      <button class="action-btn pdf full" onclick="salvarPDF()">📄 Salvar como PDF</button>
-    </div>
-  `;
+  html += `<div class="result-actions">
+    <button class="action-btn wpp full" onclick="compartilharWhatsApp()">📱 Enviar no WhatsApp</button>
+    <button class="action-btn share" onclick="compartilharNativo()">📤 Compartilhar</button>
+    <button class="action-btn copy" onclick="copiarAnalise()">📋 Copiar</button>
+    <button class="action-btn pdf full" onclick="salvarPDF()">📄 Salvar como PDF</button>
+  </div>`;
   rEl.innerHTML = html;
   rEl.classList.add('show');
 }
-
 function fecharResult() { const r = document.getElementById('result'); if (r) r.classList.remove('show'); }
-
 function gerarTextoAnalise() {
   if (!ultimaAnalise) return '';
   const a = ultimaAnalise;
   const linhas = [];
-  linhas.push(`*${a.nome}*`); linhas.push('');
-  linhas.push(`Rende: ${a.r} ${a.unid}`); linhas.push('');
+  linhas.push(`*${a.nome}*`); linhas.push(''); linhas.push(`Rende: ${a.r} ${a.unid}`); linhas.push('');
   linhas.push(`*CUSTO POR ${a.unidSingular.toUpperCase()}:* ${fmt(a.custoBaseUn)}`);
   linhas.push(`   • Ingredientes: ${fmt(a.custoIngUn)}`);
   if (a.embalagemUn > 0) linhas.push(`   • Embalagem: ${fmt(a.embalagemUn)}`);
   if (a.gasUn > 0) linhas.push(`   • Gás/luz: ${fmt(a.gasUn)}`);
   if (a.custoMaoObraUn > 0) linhas.push(`   • Mão de obra: ${fmt(a.custoMaoObraUn)}`);
-  linhas.push('');
-  linhas.push(`*PREÇO MÍNIMO:* ${fmt(a.precoMin)}`);
-  if (a.perc > 0) {
-    linhas.push(`*PREÇO SUGERIDO (${a.perc}% lucro):* ${fmt(a.precoPeloPerc)}`);
-    linhas.push(`   Lucro: ${fmt(a.lucroPeloPerc)} por ${a.unidSingular}`);
-  }
+  linhas.push(''); linhas.push(`*PREÇO MÍNIMO:* ${fmt(a.precoMin)}`);
+  if (a.perc > 0) { linhas.push(`*PREÇO SUGERIDO (${a.perc}% lucro):* ${fmt(a.precoPeloPerc)}`); linhas.push(`   Lucro: ${fmt(a.lucroPeloPerc)} por ${a.unidSingular}`); }
   if (a.precoAtual > 0) {
     const lucro = a.precoAtual - a.precoAtual * (a.taxa/100) - a.custoBaseUn;
     const margem = (lucro / a.precoAtual) * 100;
@@ -1759,34 +1703,17 @@ function gerarTextoAnalise() {
   linhas.push(''); linhas.push('_Calculado com NãoQuebre_');
   return linhas.join('\n');
 }
-
-function compartilharWhatsApp() {
-  const texto = gerarTextoAnalise();
-  if (!texto) { mostrarToast('Calcule antes de compartilhar'); return; }
-  window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
-}
-
+function compartilharWhatsApp() { const texto = gerarTextoAnalise(); if (!texto) { mostrarToast('Calcule antes'); return; } window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank'); }
 async function compartilharNativo() {
-  const texto = gerarTextoAnalise();
-  if (!texto) { mostrarToast('Calcule antes de compartilhar'); return; }
-  if (navigator.share) {
-    try { await navigator.share({ title: 'Análise — ' + (ultimaAnalise?.nome || 'NãoQuebre'), text: texto }); }
-    catch (e) { if (e.name !== 'AbortError') mostrarToast('Não foi possível compartilhar'); }
-  } else { copiarTexto(texto); mostrarToast('Texto copiado!'); }
+  const texto = gerarTextoAnalise(); if (!texto) { mostrarToast('Calcule antes'); return; }
+  if (navigator.share) { try { await navigator.share({ title: 'Análise', text: texto }); } catch (e) {} }
+  else { copiarTexto(texto); mostrarToast('Texto copiado!'); }
 }
-
-function copiarAnalise() {
-  const texto = gerarTextoAnalise();
-  if (!texto) { mostrarToast('Calcule antes de copiar'); return; }
-  copiarTexto(texto);
-  mostrarToast('✓ Análise copiada!');
-}
-
+function copiarAnalise() { const texto = gerarTextoAnalise(); if (!texto) { mostrarToast('Calcule antes'); return; } copiarTexto(texto); mostrarToast('✓ Copiado!'); }
 function copiarTexto(texto) {
   if (navigator.clipboard) navigator.clipboard.writeText(texto).catch(() => fallbackCopiar(texto));
   else fallbackCopiar(texto);
 }
-
 function fallbackCopiar(texto) {
   const ta = document.createElement('textarea');
   ta.value = texto; ta.style.position = 'fixed'; ta.style.opacity = '0';
@@ -1794,53 +1721,24 @@ function fallbackCopiar(texto) {
   try { document.execCommand('copy'); } catch (e) {}
   document.body.removeChild(ta);
 }
-
 function salvarPDF() {
-  const texto = gerarTextoAnalise();
-  if (!texto) { mostrarToast('Calcule antes de salvar'); return; }
+  const texto = gerarTextoAnalise(); if (!texto) { mostrarToast('Calcule antes'); return; }
   const win = window.open('', '_blank');
   if (!win) { mostrarToast('Bloqueado pelo navegador'); return; }
-  const html = `
-    <!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análise — ${escapeHtml(ultimaAnalise?.nome || 'NãoQuebre')}</title>
-    <style>
-      @page { margin: 20mm; }
-      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        color: #18181b; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px; }
-      h1 { font-size: 24px; margin-bottom: 4px; font-weight: 800; color: #101330; letter-spacing: -0.02em; }
-      .sub { color: #71717a; font-size: 13px; margin-bottom: 24px; }
-      .header-logo { display: flex; align-items: center; gap: 10px;
-        margin-bottom: 20px; padding-bottom: 20px; border-bottom: 3px solid #ee3b3b; }
-      .header-logo .mark { width: 40px; height: 40px; background: #ee3b3b; color: #fff;
-        border-radius: 10px; display: flex; align-items: center; justify-content: center;
-        font-size: 16px; font-weight: 900; letter-spacing: -0.05em; }
-      .header-logo strong { font-size: 20px; color: #101330; font-weight: 800; }
-      pre { font-family: ui-monospace, "SF Mono", Monaco, monospace;
-        white-space: pre-wrap; word-wrap: break-word;
-        background: #f7f7f8; padding: 20px; border-radius: 12px;
-        border-left: 4px solid #ee3b3b; font-size: 13px; color: #18181b; }
-      .footer { margin-top: 30px; padding-top: 20px;
-        border-top: 1px solid #e5e5e8; text-align: center; color: #a1a1aa; font-size: 12px; }
-      .print-btn { position: fixed; top: 20px; right: 20px;
-        background: #ee3b3b; color: #fff; border: none; padding: 12px 20px;
-        border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
-      @media print { .print-btn { display: none; } }
-    </style></head><body>
-    <button class="print-btn" onclick="window.print()">📄 Salvar como PDF</button>
+  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Análise</title>
+    <style>@page{margin:20mm}body{font-family:sans-serif;color:#18181b;line-height:1.6;max-width:600px;margin:0 auto;padding:20px}h1{font-size:24px;margin-bottom:4px;font-weight:800;color:#101330}.sub{color:#71717a;font-size:13px;margin-bottom:24px}.header-logo{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:20px;border-bottom:3px solid #ee3b3b}.header-logo .mark{width:40px;height:40px;background:#ee3b3b;color:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900}.header-logo strong{font-size:20px;color:#101330;font-weight:800}pre{font-family:monospace;white-space:pre-wrap;background:#f7f7f8;padding:20px;border-radius:12px;border-left:4px solid #ee3b3b;font-size:13px}.footer{margin-top:30px;padding-top:20px;border-top:1px solid #e5e5e8;text-align:center;color:#a1a1aa;font-size:12px}.print-btn{position:fixed;top:20px;right:20px;background:#ee3b3b;color:#fff;border:none;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer}@media print{.print-btn{display:none}}</style>
+    </head><body><button class="print-btn" onclick="window.print()">📄 Salvar como PDF</button>
     <div class="header-logo"><div class="mark">NQ</div><strong>NãoQuebre</strong></div>
     <h1>${escapeHtml(ultimaAnalise?.nome || 'Análise')}</h1>
     <div class="sub">Gerado em ${new Date().toLocaleString('pt-BR')}</div>
     <pre>${escapeHtml(texto)}</pre>
-    <div class="footer">Análise gerada por NãoQuebre — Calculadora de precificação</div>
-    <script>window.onload = () => setTimeout(() => window.print(), 500);<\/script>
-    </body></html>
-  `;
+    <div class="footer">Análise gerada por NãoQuebre</div>
+    <script>window.onload=()=>setTimeout(()=>window.print(),500);<\/script>
+    </body></html>`;
   win.document.write(html);
   win.document.close();
   mostrarToast('Escolha "Salvar como PDF" na impressão');
 }
-
 function abrirMenuConta() {
   const modal = document.getElementById('modalBody');
   if (!modal) return;
@@ -1859,13 +1757,10 @@ function abrirMenuConta() {
       <button class="btn-primary" onclick="exportarBackup()" style="background:#0ea5e9;">📤 Exportar backup</button>
       <button class="btn-primary" onclick="sair()" style="background:#71717a;">Sair da conta</button>
       <button class="btn-primary" onclick="fecharMenu()" style="background:#e5e5e8;color:#18181b;">Fechar</button>
-    </div>
-  `;
+    </div>`;
   document.getElementById('overlay').classList.add('show');
 }
-
 function fecharMenu() { const o = document.getElementById('overlay'); if (o) o.classList.remove('show'); }
-
 function exportarBackup() {
   salvarAtual();
   const json = JSON.stringify({ produtos }, null, 2);
@@ -1874,14 +1769,14 @@ function exportarBackup() {
   const a = document.createElement('a');
   a.href = url;
   a.download = 'naoquebre-backup-' + new Date().toISOString().slice(0, 10) + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  fecharMenu();
+  a.click(); URL.revokeObjectURL(url); fecharMenu();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('loginSenha').addEventListener('keypress', (e) => { if (e.key === 'Enter') fazerLogin(); });
-  document.getElementById('cadSenha').addEventListener('keypress', (e) => { if (e.key === 'Enter') fazerCadastro(); });
+  document.getElementById('loginSenha').addEventListener('keypress', e => { if (e.key === 'Enter') fazerLogin(); });
+  document.getElementById('cadSenha').addEventListener('keypress', e => { if (e.key === 'Enter') fazerCadastro(); });
+  document.getElementById('esqueciEmail').addEventListener('keypress', e => { if (e.key === 'Enter') enviarLinkRecuperacao(); });
+  document.getElementById('novaSenha2').addEventListener('keypress', e => { if (e.key === 'Enter') salvarNovaSenha(); });
   init();
 });
 </script>
