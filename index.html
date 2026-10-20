@@ -562,21 +562,59 @@ async function fazerCadastro() {
   const nome = document.getElementById('cadNome').value.trim();
   const email = document.getElementById('cadEmail').value.trim();
   const senha = document.getElementById('cadSenha').value;
+
   if (!nome) { mostrarAuthMsg('Digite seu nome', 'error'); return; }
   if (!email) { mostrarAuthMsg('Digite seu email', 'error'); return; }
   if (senha.length < 6) { mostrarAuthMsg('Senha deve ter pelo menos 6 caracteres', 'error'); return; }
-  const btn = document.getElementById('btnCadastrar'); btn.disabled = true; btn.textContent = 'Criando...';
+
+  const btn = document.getElementById('btnCadastrar');
+  btn.disabled = true;
+  btn.textContent = 'Verificando...';
+
   try {
-    const { data, error } = await sbClient.auth.signUp({ email, password: senha, options: { data: { nome: nome } } });
+    /* 1. Verifica se o e-mail está na lista de autorizados (VIP) */
+    const { data: autorizado, error: erroAuth } = await sbClient
+      .from('autorizados')
+      .select('email')
+      .eq('email', email.toLowerCase())
+      .single();
+
+    if (erroAuth && erroAuth.code !== 'PGRST116') {
+      /* PGRST116 significa "não achou" — outros erros são problemas reais */
+      throw erroAuth;
+    }
+
+    if (!autorizado) {
+      mostrarAuthMsg('❌ Este e-mail não está liberado. Entre em contato com o LeOps Digital para liberar.', 'error');
+      btn.disabled = false;
+      btn.textContent = 'Criar conta';
+      return;
+    }
+
+    /* 2. E-mail autorizado! Cria a conta normalmente */
+    btn.textContent = 'Criando conta...';
+    const { data, error } = await sbClient.auth.signUp({
+      email, password: senha, options: { data: { nome: nome } }
+    });
     if (error) throw error;
-    if (data.session && data.user) { user = data.user; await entrarNoApp(); }
-    else { mostrarAuthMsg('Conta criada! Verifique seu email.', 'success'); setTimeout(() => mostrarLogin(), 3000); }
+
+    if (data.session && data.user) {
+      user = data.user;
+      await entrarNoApp();
+    } else {
+      mostrarAuthMsg('✅ Conta criada! Verifique seu email pra confirmar.', 'success');
+      setTimeout(() => mostrarLogin(), 3000);
+    }
   } catch (e) {
     let msg = 'Erro ao criar conta';
     if (e.message.includes('already registered')) msg = 'Esse email já tem conta.';
     else if (e.message.includes('password')) msg = 'Senha muito fraca.';
+    else msg = e.message;
     mostrarAuthMsg(msg, 'error');
-  } finally { btn.disabled = false; btn.textContent = 'Criar conta'; }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Criar conta';
+  }
 }
 
 async function enviarLinkRecuperacao() {
