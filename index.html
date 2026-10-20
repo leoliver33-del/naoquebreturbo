@@ -502,7 +502,8 @@ function checarAdmin() {
     document.getElementById('loginForm').style.display = 'none';
     document.getElementById('cadastroForm').style.display = 'none';
     document.getElementById('esqueciForm').style.display = 'none';
-    document.getElementById('adminForm').style.display = 'block';
+    
+    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     return true;
   }
   return false;
