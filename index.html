@@ -274,18 +274,19 @@
     <div class="auth-msg" id="authMsg"></div>
     
     <!-- PAINEL ADMIN ESCONDIDO -->
-    <div id="adminForm"
+    <div id="adminForm" style="display:none;">
       <h2>Painel Admin</h2>
       <p class="auth-sub">Liberar acesso para novo cliente</p>
       <div class="auth-field"><label>Senha do Admin</label><input type="password" id="admSenha" placeholder="Digite a senha secreta"></div>
       <button class="auth-btn" onclick="entrarAdmin()">Entrar no Painel</button>
-      <div id="admPainel" style=margin-top: 20px;">
+      <div id="admPainel" style="display:none; margin-top: 20px;">
         <div class="auth-field"><label>E-mail do Cliente</label><input type="email" id="admEmailLiberar" placeholder="cliente@email.com"></div>
         <div class="auth-field"><label>Nome do Cliente (opcional)</label><input type="text" id="admNomeLiberar" placeholder="Ex: Restaurante do João"></div>
         <button class="auth-btn" onclick="liberarAcesso()" id="btnLiberar">✅ Liberar Acesso</button>
       </div>
     </div>    
-<div id="loginForm">
+
+    <div id="loginForm">
       <h2>Entrar</h2>
       <p class="auth-sub">Acesse suas fichas técnicas</p>
       <div class="auth-field"><label>Email</label><input type="email" id="loginEmail" placeholder="seu@email.com"></div>
@@ -496,13 +497,14 @@ let carregandoReceitas = false;
 let menuAberto = null;
 let produtoExcluido = null;
 let timeoutUndo = null;
+
 function checarAdmin() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('adm') === 'leo-nq-2026') {
     document.getElementById('loginForm').style.display = 'none';
     document.getElementById('cadastroForm').style.display = 'none';
     document.getElementById('esqueciForm').style.display = 'none';
-    
+    document.getElementById('adminForm').style.display = 'block';
     sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     return true;
   }
@@ -539,8 +541,10 @@ async function liberarAcesso() {
     btn.textContent = '✅ Liberar Acesso';
   }
 }
+
 async function init() {
-  try {    if (checarAdmin()) return;
+  try {
+    if (checarAdmin()) return;
     sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const hash = window.location.hash;
     if (hash && hash.includes('access_token') && hash.includes('type=recovery')) {
