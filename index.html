@@ -273,7 +273,19 @@
     </div>
     <div class="auth-msg" id="authMsg"></div>
     
-    <div id="loginForm">
+    <!-- PAINEL ADMIN ESCONDIDO -->
+    <div id="adminForm" style="display:none;">
+      <h2>Painel Admin</h2>
+      <p class="auth-sub">Liberar acesso para novo cliente</p>
+      <div class="auth-field"><label>Senha do Admin</label><input type="password" id="admSenha" placeholder="Digite a senha secreta"></div>
+      <button class="auth-btn" onclick="entrarAdmin()">Entrar no Painel</button>
+      <div id="admPainel" style="display:none; margin-top: 20px;">
+        <div class="auth-field"><label>E-mail do Cliente</label><input type="email" id="admEmailLiberar" placeholder="cliente@email.com"></div>
+        <div class="auth-field"><label>Nome do Cliente (opcional)</label><input type="text" id="admNomeLiberar" placeholder="Ex: Restaurante do João"></div>
+        <button class="auth-btn" onclick="liberarAcesso()" id="btnLiberar">✅ Liberar Acesso</button>
+      </div>
+    </div>    
+<div id="loginForm">
       <h2>Entrar</h2>
       <p class="auth-sub">Acesse suas fichas técnicas</p>
       <div class="auth-field"><label>Email</label><input type="email" id="loginEmail" placeholder="seu@email.com"></div>
@@ -484,9 +496,50 @@ let carregandoReceitas = false;
 let menuAberto = null;
 let produtoExcluido = null;
 let timeoutUndo = null;
+function checarAdmin() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('adm') === 'leo-nq-2026') {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('cadastroForm').style.display = 'none';
+    document.getElementById('esqueciForm').style.display = 'none';
+    document.getElementById('adminForm').style.display = 'block';
+    return true;
+  }
+  return false;
+}
 
-async function init() {
+function entrarAdmin() {
+  const senha = document.getElementById('admSenha').value;
+  if (senha === 'nq-admin-123') {
+    document.getElementById('admPainel').style.display = 'block';
+  } else {
+    alert('Senha incorreta!');
+  }
+}
+
+async function liberarAcesso() {
+  const email = document.getElementById('admEmailLiberar').value.trim().toLowerCase();
+  const nome = document.getElementById('admNomeLiberar').value.trim();
+  const btn = document.getElementById('btnLiberar');
+  
+  if (!email) { alert('Digite o e-mail'); return; }
+  
+  btn.textContent = 'Liberando...';
+  
   try {
+    const { error } = await sbClient.from('autorizados').insert({ email: email, nome: nome });
+    if (error) throw error;
+    alert('✅ Acesso liberado para: ' + email);
+    document.getElementById('admEmailLiberar').value = '';
+    document.getElementById('admNomeLiberar').value = '';
+  } catch (e) {
+    alert('❌ Erro: ' + e.message);
+  } finally {
+    btn.textContent = '✅ Liberar Acesso';
+  }
+}
+async function init() {
+  try {    if (checarAdmin()) return;
     sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const hash = window.location.hash;
     if (hash && hash.includes('access_token') && hash.includes('type=recovery')) {
